@@ -1,3 +1,4 @@
+#18.Nov.2023 
 '''
 -----------
 | Switch   |
@@ -22,7 +23,7 @@ match code:
     case "No":
         print ("no")
     case _:
-        print("Very Good)
+        print("Very Good")
 
 '''
 -----------
@@ -53,7 +54,7 @@ while  n<10:
     n += 1
     break
 ----------------------------------------------------------
-name =['Mg Mg', 'Ma Ma', 'Kyaw Kyaw',"Ga Ga"]
+# name =['Mg Mg', 'Ma Ma', 'Kyaw Kyaw',"Ga Ga"]
 
 st = input(" Enter Name : ")
 i = 0
