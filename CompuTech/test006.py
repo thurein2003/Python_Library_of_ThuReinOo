@@ -15,15 +15,16 @@ While only look for True/False only
         ----
 
 '''
-code = input("Yes / No : ")
+name = ["Mg Mg","Hla Hla","Aye aye","GIGI","YUYU","OO OO","Tru Tru"]
+i = 0 
+while i <= 6:
+    print(name[i])
+    i += 1
 
-match code:
-    case "Yes":
-        print ("yes")
-    case "No":
-        print ("no")
-    case _:
-        print("Very Good")
+item = 0 
+for item in name:
+    print(item)
+    
 
 '''
 -----------
@@ -53,6 +54,17 @@ while  n<10:
     print(n, "hi")
     n += 1
     break
+    
+--------------------------------
+code = input("Yes / No : ")
+
+match code:
+    case "Yes":
+        print ("yes")
+    case "No":
+        print ("no")
+    case _:
+        print("Very Good")
 ----------------------------------------------------------
 # name =['Mg Mg', 'Ma Ma', 'Kyaw Kyaw',"Ga Ga"]
 
