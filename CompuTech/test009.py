@@ -1,5 +1,5 @@
 #3 DECEMBER 2023
-
+import numpy 
 '''
 ---------------
 | Function    |
@@ -14,8 +14,10 @@ len(), type(), sum(), int(), float(), str(), bool(), tuple(), list(), print(),
 Sharing files
 
 => import fileName                      # need to run====> functionName.function()
+=> import fileName as p                 # change the fileName call, we don't need to call fileName we just need to call by NickName like (p)
 => from fileName import functionName    # only can run specific function
 => from fileName import *               # don't need to run ====> functionName.function() only ===>function()
+
 '''
 
 
