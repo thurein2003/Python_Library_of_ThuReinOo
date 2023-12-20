@@ -47,3 +47,7 @@ with left_container:
     st.markdown(mail_box, unsafe_allow_html = True)
 with right_container:
     st.empty()
+    
+st.write("Before requests.get")
+r = requests.get(url)
+st.write("After requests.get")
