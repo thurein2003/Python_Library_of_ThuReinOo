@@ -3,11 +3,7 @@ import requests
 from streamlit_lottie import st_lottie
 st.set_page_config(page_title="Thu Rein Oo", page_icon = ":tada:",layout="wide")
 
-#To connect with css
-def css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html = True)
-css("/style.css")
+
 
 #Some function
 def code_loading(url):
@@ -16,6 +12,11 @@ def code_loading(url):
         return none
     return r.json()
 
+#To connect with css
+def css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html = True)
+css("/Users/thurein/Library/CloudStorage/OneDrive-Personal/Python_Library_of_ThuReinOo/Projects/Website Testing/style.css")
 
 #Some link 
 code_link = code_loading("https://lottie.host/5e5b967e-69ad-42e8-a8e7-e7079419c74c/iGZtecXGbQ.json")
