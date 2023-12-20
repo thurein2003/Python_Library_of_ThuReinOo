@@ -48,6 +48,3 @@ with left_container:
 with right_container:
     st.empty()
     
-st.write("Before requests.get")
-r = requests.get(url)
-st.write("After requests.get")
