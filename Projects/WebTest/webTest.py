@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 from streamlit_lottie import st_lottie
 import sys
+import os
 
 st.set_page_config(page_title="Thu Rein Oo", page_icon = ":tada:",layout="wide")
 
@@ -14,12 +15,16 @@ def code_loading(url):
         return none
     return r.json()
 
-#To connect with css
-def css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html = True)
-css("/Users/thurein/Library/CloudStorage/OneDrive-Personal/Python_Library_of_ThuReinOo/Projects/WebTest/style.css")
+# Find the path to the CSS file
+css_path = os.path.join(os.path.dirname(__file__), "/Projects/WebTest/style.css")
 
+# Check if the file exists
+if os.path.isfile(css_path):
+    # If the file exists, read its contents and pass them to the 'css' function
+    with open(css_path, "r") as f:
+        css(f.read())
+else:
+    print(f"The CSS file was not found at: {css_path}")
 #Some link 
 code_link = code_loading("https://lottie.host/5e5b967e-69ad-42e8-a8e7-e7079419c74c/iGZtecXGbQ.json")
 
