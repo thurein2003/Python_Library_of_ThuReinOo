@@ -1,6 +1,6 @@
 import { lessons } from './lessons.js';
 import { solutions } from './solutions.js';
-import { copy } from './i18n.js';
+import { copy } from './i18n.js?v=learner-profile-2';
 
 const STORAGE_KEY = 'python-project-library-progress-v1';
 const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
