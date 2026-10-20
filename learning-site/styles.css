@@ -59,7 +59,7 @@ a { color: inherit; }
 
 .topbar { height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid var(--line); background: var(--panel); }
 .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
-.brand-mark { display: grid; place-items: center; width: 38px; aspect-ratio: 1; border-radius: 8px; background: var(--forest); color: white; font: 500 17px 'DM Mono', monospace; }
+.brand-mark { display: block; width: 46px; height: 46px; object-fit: contain; }
 .brand strong, .brand small { display: block; }
 .brand strong { font-size: 14px; }
 .brand small { margin-top: 2px; color: var(--muted); font-size: 12px; }
@@ -160,7 +160,6 @@ a { color: inherit; }
 :root[data-theme="dark"] .badge.level-large { border-color: #79513c; background: #3b2b22; color: #ffc09b; }
 :root[data-theme="dark"] .button.primary { border-color: #287b59; background: #287b59; color: #f5fff8; }
 :root[data-theme="dark"] .button.primary:hover { background: #1e6648; }
-:root[data-theme="dark"] .brand-mark,
 :root[data-theme="dark"] .lesson-item[aria-current="page"] .lesson-number { color: #0d2117; }
 :root[data-theme="dark"] .editor-panel { border-color: #34493c; }
 :root[data-theme="dark"] .confirm-dialog::backdrop { background: #000a; }
@@ -180,7 +179,7 @@ a { color: inherit; }
   .topbar { height: auto; min-height: 64px; flex-wrap: wrap; gap: 10px; padding: 10px 14px; }
   .brand strong { font-size: 12px; }
   .brand small { font-size: 10px; }
-  .brand-mark { width: 34px; }
+  .brand-mark { width: 36px; height: 36px; }
   .topbar-meta { width: 100%; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: 10px; }
   .preferences { gap: 5px; }
   .language-control select { max-width: 105px; }
