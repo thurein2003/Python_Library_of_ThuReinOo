@@ -2,9 +2,9 @@
 
 Learn Python by building projects, from short beginner exercises to larger capstones.
 
-**[Open the learning site](https://thurein2003.github.io/Python_Library_of_ThuReinOo/)**
+The site is prepared for Vercel deployment. Connect the repository to Vercel to publish it; only `learning-site/` is served, not the rest of this library.
 
-The interactive site includes 12 guided projects across small, medium, and large tracks. Python runs in your browser with Pyodide; drafts and completion marks stay in that browser. The site deploys from `learning-site/` with GitHub Pages.
+The interactive site includes 12 guided projects across small, medium, and large tracks. Python runs in your browser with Pyodide; drafts and completion marks stay in that browser. Vercel Hobby is free for personal, non-commercial projects.
 
 ## Repository
 
@@ -22,6 +22,6 @@ Open <http://localhost:8000>. The first code run downloads the pinned Pyodide ru
 
 ## Add a project
 
-Add a lesson to `learning-site/lessons.js` with a title, track, learning goals, challenge, hint, and runnable starter code. Test it in the site before opening a pull request.
+Add a lesson to `learning-site/lessons.js` with a title, track, learning goals, challenge, hint, and runnable starter code. Test it in the site before opening a pull request. `vercel.json` publishes only the learning site directory.
 
 Contributions and corrections are welcome. Review code before running it; the browser editor is for learning and is not a security boundary.

@@ -1,6 +1,6 @@
 # Learning Site
 
-Static Python project lessons, served free through GitHub Pages. The deployment workflow publishes only this directory, leaving the existing repository folders and virtual environment untouched.
+Static Python project lessons, prepared for free personal deployment through Vercel Hobby. The repository-root `vercel.json` publishes only this directory, leaving the existing repository folders and virtual environment untouched.
 
 ## Preview
 
@@ -16,4 +16,4 @@ Open <http://localhost:8000>. The first run loads Pyodide `314.0.7` from jsDeliv
 
 Add a unique lesson object to `lessons.js`. Include a track (`Small`, `Medium`, or `Large`), an accurate duration, topic, short summary, learning goals, task, hint, and code that runs with the Python standard library. Keep examples educational and safe. Try the lesson in the browser at mobile and desktop sizes.
 
-GitHub Pages deploys on pushes to `main` that change this directory. The repository owner may need to choose **Settings → Pages → GitHub Actions** once before the first deployment.
+Connect the private GitHub repository to your personal Vercel account and import the project. Vercel reads the root `vercel.json`; the output directory is `learning-site/`, so other repository content is not served. Hobby use is limited to personal, non-commercial projects.
