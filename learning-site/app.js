@@ -1,6 +1,6 @@
 import { lessons } from './lessons.js';
 import { solutions } from './solutions.js';
-import { copy } from './i18n.js?v=learner-profile-3';
+import { copy } from './i18n.js?v=learner-profile-4';
 
 const STORAGE_KEY = 'python-project-library-progress-v1';
 const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
@@ -106,6 +106,7 @@ function applyPreferences() {
     '#local-python-label': 'runsLocally', '#breadcrumb-label': 'projectLibrary', '#clear-progress-title': 'clearTitle',
     '#clear-progress-description': 'clearDescription', '#cancel-clear': 'cancel', '#confirm-clear': 'clear',
     '#footer-made': 'footerMade', '#footer-safety': 'footerSafety', '#certificate-unlocked': 'certificateReady',
+    '#star-repository-label': 'starRepository',
     '#learner-dialog-title': 'learnerWelcomeTitle', '#learner-dialog-copy': 'learnerWelcomeCopy',
     '#learner-name-label': 'learnerNameLabel', '#learner-privacy-copy': 'learnerPrivacyCopy',
     '#change-learner': 'changeLearner', '#save-learner': 'continueLearning', '#cancel-learner': 'cancel',
@@ -165,6 +166,7 @@ function updateCertificateAccess() {
   document.querySelector('#certificate-access').hidden = !allCompleted;
   document.querySelector('#certificate-unlocked').textContent = allVerified ? t('certificateReady') : t('certificateVerificationPending');
   document.querySelector('#certificate-button').disabled = !allVerified;
+  document.querySelector('#star-repository-link').hidden = !allVerified;
 }
 
 function renderCertificate() {

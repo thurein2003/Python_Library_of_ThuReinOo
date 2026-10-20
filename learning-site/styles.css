@@ -162,6 +162,10 @@ a { color: inherit; }
 
 .certificate-access { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 1080px; margin: 20px auto 0; padding: 14px 16px; border: 1px solid var(--line); border-left: 3px solid var(--forest); border-radius: 6px; background: var(--panel); color: var(--soft-ink); font-size: 12px; }
 .certificate-access[hidden] { display: none; }
+.certificate-actions-inline { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.star-repository { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+.star-repository[hidden] { display: none; }
+.star-repository img { width: 92px; height: 20px; object-fit: contain; }
 .certificate-dialog { width: min(920px, calc(100% - 24px)); max-width: 920px; max-height: calc(100vh - 24px); padding: 16px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); box-shadow: 0 20px 70px #17231f30; }
 .certificate-dialog::backdrop { background: #101a1670; }
 .certificate-sheet { display: flex; flex-direction: column; align-items: center; min-height: 560px; padding: 24px 54px 18px; border: 6px double #245c47; background: #fff; color: #19342b; text-align: center; }
@@ -245,6 +249,7 @@ a { color: inherit; }
   .lesson-navigation { gap: 9px; }
   .site-footer { padding: 11px 14px; font-size: 9px; }
   .certificate-access { align-items: flex-start; flex-direction: column; }
+  .certificate-actions-inline { width: 100%; }
   .certificate-dialog { padding: 10px; }
   .certificate-sheet { min-height: 470px; padding: 20px 14px 16px; border-width: 4px; }
   .certificate-sheet h2 { font-size: 25px; }

@@ -4,6 +4,10 @@ Learn Python by building projects, from small exercises to larger applications.
 
 **Live site:** https://thurein2003.github.io/Python_Library_of_ThuReinOo/
 
+[![GitHub stars](https://img.shields.io/github/stars/thurein2003/Python_Library_of_ThuReinOo?style=social)](https://github.com/thurein2003/Python_Library_of_ThuReinOo)
+
+After earning a certificate, learners can star the repository. This live total counts GitHub stars, not verified certificate recipients.
+
 ## Try it
 
 1. Choose a project and read its challenge.
