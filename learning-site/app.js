@@ -6,6 +6,7 @@ const STORAGE_KEY = 'python-project-library-progress-v1';
 const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
 const CERTIFICATE_NAME_KEY = 'python-project-library-certificate-name-v1';
 const VERIFIED_RUNS_KEY = 'python-project-library-verified-runs-v1';
+const LEARNER_NAME_KEY = 'python-project-library-learner-name-v1';
 const lessonList = document.querySelector('#lesson-list');
 const lessonContent = document.querySelector('#lesson-content');
 const filter = document.querySelector('#level-filter');
@@ -14,7 +15,19 @@ const progressCount = document.querySelector('#progress-count');
 const confirmDialog = document.querySelector('#confirm-dialog');
 const languageSelect = document.querySelector('#language-select');
 const certificateDialog = document.querySelector('#certificate-dialog');
-const certificateName = document.querySelector('#certificate-name');
+const learnerDialog = document.querySelector('#learner-dialog');
+const learnerNameInput = document.querySelector('#learner-name-input');
+let learnerName = localStorage.getItem(LEARNER_NAME_KEY) || '';
+if (!learnerName) {
+  for (const key of Object.keys(localStorage)) {
+    if (key.startsWith('python-project-draft-')) localStorage.removeItem(key);
+  }
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(VERIFIED_RUNS_KEY);
+  localStorage.removeItem(SOLUTION_CLICKS_KEY);
+  localStorage.removeItem(CERTIFICATE_NAME_KEY);
+  localStorage.removeItem('python-project-library-active');
+}
 let activeId = localStorage.getItem('python-project-library-active') || lessons[0].id;
 let language = localStorage.getItem('python-project-library-language') || 'en';
 if (!copy[language]) language = 'en';
@@ -59,7 +72,10 @@ function applyPreferences() {
     '#local-python-label': 'runsLocally', '#breadcrumb-label': 'projectLibrary', '#clear-progress-title': 'clearTitle',
     '#clear-progress-description': 'clearDescription', '#cancel-clear': 'cancel', '#confirm-clear': 'clear',
     '#footer-made': 'footerMade', '#footer-safety': 'footerSafety', '#certificate-unlocked': 'certificateReady',
-    '#certificate-button': 'getCertificate', '#certificate-name-label': 'certificateNameLabel',
+    '#learner-dialog-title': 'learnerWelcomeTitle', '#learner-dialog-copy': 'learnerWelcomeCopy',
+    '#learner-name-label': 'learnerNameLabel', '#learner-privacy-copy': 'learnerPrivacyCopy',
+    '#change-learner': 'changeLearner', '#save-learner': 'continueLearning', '#cancel-learner': 'cancel',
+    '#certificate-button': 'getCertificate',
     '#certificate-title': 'certificateTitle', '#certificate-issuer': 'certificateIssuer', '#certificate-intro': 'certificateIntro',
     '#certificate-project-label': 'certificateProjectLabel', '#certificate-verified-label': 'certificateVerifiedLabel', '#certificate-solution-label': 'certificateSolutionLabel',
     '#certificate-issued-label': 'certificateIssuedLabel', '#certificate-note': 'certificateNote',
@@ -72,7 +88,8 @@ function applyPreferences() {
   const reset = document.querySelector('#reset-progress');
   reset.title = strings.clearProgress;
   reset.setAttribute('aria-label', strings.clearProgress);
-  certificateName.placeholder = strings.certificateNamePlaceholder;
+  document.querySelector('#learner-name-display').textContent = learnerName;
+  document.querySelector('#change-learner').hidden = !learnerName;
   saveProgress();
   renderCertificate();
 }
@@ -116,7 +133,7 @@ function updateCertificateAccess() {
 }
 
 function renderCertificate() {
-  document.querySelector('#certificate-recipient').textContent = certificateName.value.trim() || t('certificateRecipientPlaceholder');
+  document.querySelector('#certificate-recipient').textContent = learnerName || t('certificateRecipientPlaceholder');
   document.querySelector('#certificate-completed-copy').textContent = t('certificateCompleted', { total: lessons.length });
   document.querySelector('#certificate-project-count').textContent = String(completed.size);
   document.querySelector('#certificate-verified-count').textContent = String(verifiedRuns.size);
@@ -125,7 +142,7 @@ function renderCertificate() {
   document.querySelector('#certificate-date').textContent = new Intl.DateTimeFormat(locales[language], {
     year: 'numeric', month: 'long', day: 'numeric'
   }).format(new Date());
-  document.querySelector('#print-certificate').disabled = !certificateName.value.trim();
+  document.querySelector('#print-certificate').disabled = !learnerName.trim();
 }
 
 function hasChangedStarter(sourceLesson, editor) {
@@ -367,17 +384,37 @@ languageSelect.addEventListener('change', () => {
 document.querySelector('#light-mode').addEventListener('click', () => setTheme('light'));
 document.querySelector('#dark-mode').addEventListener('click', () => setTheme('dark'));
 document.querySelector('#certificate-button').addEventListener('click', () => {
-  certificateName.value = localStorage.getItem(CERTIFICATE_NAME_KEY) || '';
   renderCertificate();
   certificateDialog.showModal();
-  certificateName.focus();
-});
-certificateName.addEventListener('input', () => {
-  localStorage.setItem(CERTIFICATE_NAME_KEY, certificateName.value);
-  renderCertificate();
 });
 document.querySelector('#close-certificate').addEventListener('click', () => certificateDialog.close());
 document.querySelector('#print-certificate').addEventListener('click', () => window.print());
+
+document.querySelector('#change-learner').addEventListener('click', () => {
+  learnerNameInput.value = learnerName;
+  document.querySelector('#cancel-learner').hidden = false;
+  learnerDialog.showModal();
+  learnerNameInput.focus();
+});
+document.querySelector('#cancel-learner').addEventListener('click', () => {
+  if (learnerName) learnerDialog.close();
+});
+document.querySelector('#learner-form').addEventListener('submit', event => {
+  event.preventDefault();
+  const nextName = learnerNameInput.value.trim();
+  if (!nextName) {
+    learnerNameInput.reportValidity();
+    return;
+  }
+  if (nextName !== learnerName) resetLearnerData();
+  learnerName = nextName;
+  localStorage.setItem(LEARNER_NAME_KEY, learnerName);
+  document.querySelector('#cancel-learner').hidden = !learnerName;
+  applyPreferences();
+  renderList();
+  renderLesson();
+  learnerDialog.close();
+});
 
 function setTheme(nextTheme) {
   theme = nextTheme;
@@ -405,5 +442,25 @@ function clearProgress() {
   renderLesson();
 }
 
+function resetLearnerData() {
+  for (const key of Object.keys(localStorage)) {
+    if (key.startsWith('python-project-draft-')) localStorage.removeItem(key);
+  }
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(VERIFIED_RUNS_KEY);
+  localStorage.removeItem(SOLUTION_CLICKS_KEY);
+  localStorage.removeItem(CERTIFICATE_NAME_KEY);
+  localStorage.removeItem('python-project-library-active');
+  completed = new Set();
+  verifiedRuns = new Set();
+  solutionClicks = 0;
+  activeId = lessons[0].id;
+}
+
 applyPreferences();
 renderLesson();
+if (!learnerName) {
+  document.querySelector('#cancel-learner').hidden = true;
+  learnerDialog.showModal();
+  learnerNameInput.focus();
+}

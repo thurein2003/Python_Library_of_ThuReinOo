@@ -2,7 +2,7 @@ export const languageNames = { en: 'English', my: 'မြန်မာ', th: 'ไ
 
 export const copy = {
   en: {
-    title: 'Python Project Library', tagline: 'Learn by building', language: 'Language', theme: 'Color theme', light: 'Light', dark: 'Dark', project: 'project', of: 'of',
+    title: 'Python Project Library', tagline: 'Learn by building', language: 'Language', theme: 'Color theme', light: 'Light', dark: 'Dark', project: 'project', of: 'of', learnerProfile: 'Learner profile', changeLearner: 'Change name', learnerWelcomeTitle: 'Welcome to the Python Project Library', learnerWelcomeCopy: 'Enter your name to begin. Your learning activity stays in this browser.', learnerNameLabel: 'Learner name', learnerPrivacyCopy: 'Your name and progress are saved only in this browser and are never added to the shareable link.', continueLearning: 'Continue', cancel: 'Cancel',
     browserNote: 'Code runs in your browser', progress: '{done} / {total} complete', repository: 'Repository', workshop: 'YOUR WORKSHOP', projectPaths: 'Project paths',
     filter: 'Filter by project size', allLevels: 'All levels', small: 'Small', medium: 'Medium', large: 'Large', projects: 'projects', search: 'Search projects', findProject: 'Find a project',
     projectList: 'Projects', runsLocally: 'Python runs in this browser tab', projectLibrary: 'Project library', clearProgress: 'Clear saved progress',
@@ -17,7 +17,7 @@ export const copy = {
     certificateReady: 'All projects are complete and verified. Your certificate is ready.', certificateVerificationPending: 'All projects are marked complete. Edit and successfully run each project to unlock the certificate.', getCertificate: 'Get certificate', certificateTitle: 'Certificate of Completion', certificateIssuer: 'ECHTIT · PYTHON PROJECT LIBRARY', certificateIntro: 'This certificate is presented to', certificateNameLabel: 'Learner name', certificateNamePlaceholder: 'Enter learner name', certificateRecipientPlaceholder: 'Your name', certificateCompleted: 'for editing and successfully running all {total} guided Python projects', certificateProjectLabel: 'Projects completed', certificateVerifiedLabel: 'Projects run successfully', certificateSolutionLabel: 'Solution button clicks', certificateIssuedLabel: 'Issued', certificateNote: 'Based on learning progress saved in this browser.', closeCertificate: 'Close', printCertificate: 'Print / Save as PDF'
   },
   my: {
-    title: 'Python ပရောဂျက်စာကြည့်တိုက်', tagline: 'တည်ဆောက်ရင်း လေ့လာပါ', language: 'ဘာသာစကား', theme: 'အရောင်အပြင်အဆင်', light: 'အလင်း', dark: 'အမှောင်', project: 'ပရောဂျက်', of: 'မှ',
+    title: 'Python ပရောဂျက်စာကြည့်တိုက်', tagline: 'တည်ဆောက်ရင်း လေ့လာပါ', language: 'ဘာသာစကား', theme: 'အရောင်အပြင်အဆင်', light: 'အလင်း', dark: 'အမှောင်', project: 'ပရောဂျက်', of: 'မှ', learnerProfile: 'သင်ယူသူ', changeLearner: 'အမည်ပြောင်းရန်', learnerWelcomeTitle: 'Python ပရောဂျက်စာကြည့်တိုက်မှ ကြိုဆိုပါသည်', learnerWelcomeCopy: 'စတင်ရန် သင့်အမည်ကို ထည့်ပါ။ သင်ယူမှုမှတ်တမ်းကို ဤဘရောက်ဇာတွင်သာ သိမ်းဆည်းမည်။', learnerNameLabel: 'သင်ယူသူအမည်', learnerPrivacyCopy: 'သင့်အမည်နှင့် တိုးတက်မှုကို ဤဘရောက်ဇာတွင်သာ သိမ်းဆည်းပြီး မျှဝေမည့်လင့်ခ်တွင် မထည့်ပါ။', continueLearning: 'ဆက်လက်ရန်', cancel: 'မလုပ်တော့ပါ',
     browserNote: 'ကုဒ်ကို သင့်ဘရောက်ဇာတွင် လုပ်ဆောင်သည်', progress: '{done} / {total} ပြီးစီး', repository: 'ရင်းမြစ်ကုဒ်', workshop: 'သင်ယူရာနေရာ', projectPaths: 'ပရောဂျက်လမ်းကြောင်းများ',
     filter: 'ပရောဂျက်အရွယ်အစား စစ်ထုတ်ရန်', allLevels: 'အဆင့်အားလုံး', small: 'အသေးစား', medium: 'အလတ်စား', large: 'အကြီးစား', projects: 'ပရောဂျက်များ', search: 'ပရောဂျက်များ ရှာရန်', findProject: 'ပရောဂျက်ရှာရန်',
     projectList: 'ပရောဂျက်များ', runsLocally: 'Python ကို ဤဘရောက်ဇာတွင် လုပ်ဆောင်သည်', projectLibrary: 'ပရောဂျက်စာကြည့်တိုက်', clearProgress: 'သိမ်းထားသော တိုးတက်မှုကို ရှင်းရန်',
@@ -46,7 +46,7 @@ export const copy = {
     }
   },
   th: {
-    title: 'คลังโปรเจกต์ Python', tagline: 'เรียนรู้ผ่านการลงมือทำ', language: 'ภาษา', theme: 'ธีมสี', light: 'สว่าง', dark: 'มืด', project: 'โปรเจกต์', of: 'จาก',
+    title: 'คลังโปรเจกต์ Python', tagline: 'เรียนรู้ผ่านการลงมือทำ', language: 'ภาษา', theme: 'ธีมสี', light: 'สว่าง', dark: 'มืด', project: 'โปรเจกต์', of: 'จาก', learnerProfile: 'โปรไฟล์ผู้เรียน', changeLearner: 'เปลี่ยนชื่อ', learnerWelcomeTitle: 'ยินดีต้อนรับสู่คลังโปรเจกต์ Python', learnerWelcomeCopy: 'กรอกชื่อเพื่อเริ่มต้น กิจกรรมการเรียนจะบันทึกไว้ในเบราว์เซอร์นี้', learnerNameLabel: 'ชื่อผู้เรียน', learnerPrivacyCopy: 'ชื่อและความคืบหน้าจะบันทึกไว้เฉพาะในเบราว์เซอร์นี้ และจะไม่อยู่ในลิงก์ที่แชร์', continueLearning: 'เริ่มเรียน', cancel: 'ยกเลิก',
     browserNote: 'โค้ดทำงานในเบราว์เซอร์', progress: 'เสร็จแล้ว {done} / {total}', repository: 'คลังโค้ด', workshop: 'พื้นที่เรียนรู้', projectPaths: 'เส้นทางโปรเจกต์',
     filter: 'กรองตามขนาดโปรเจกต์', allLevels: 'ทุกระดับ', small: 'เล็ก', medium: 'กลาง', large: 'ใหญ่', projects: 'โปรเจกต์', search: 'ค้นหาโปรเจกต์', findProject: 'ค้นหาโปรเจกต์',
     projectList: 'โปรเจกต์', runsLocally: 'Python ทำงานในแท็บนี้', projectLibrary: 'คลังโปรเจกต์', clearProgress: 'ล้างความคืบหน้าที่บันทึกไว้',

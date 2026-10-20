@@ -32,6 +32,7 @@
       </div>
       <span class="privacy-note" id="browser-note">Code runs in your browser</span>
       <span class="progress-count" id="progress-count">0 / 12 complete</span>
+      <span class="learner-profile"><span id="learner-name-display"></span><button id="change-learner" type="button"></button></span>
       <a class="repo-link" href="https://github.com/thurein2003/Python_Library_of_ThuReinOo" target="_blank" rel="noreferrer"><span id="repository-label">Repository</span> <span aria-hidden="true">↗</span></a>
     </div>
   </header>
@@ -84,11 +85,21 @@
     </form>
   </dialog>
 
+  <dialog id="learner-dialog" class="confirm-dialog learner-dialog" aria-labelledby="learner-dialog-title">
+    <form id="learner-form">
+      <h2 id="learner-dialog-title">Welcome to the Python Project Library</h2>
+      <p id="learner-dialog-copy"></p>
+      <label for="learner-name-input" id="learner-name-label"></label>
+      <input id="learner-name-input" type="text" maxlength="80" autocomplete="name" required>
+      <p class="privacy-copy" id="learner-privacy-copy"></p>
+      <div class="dialog-actions">
+        <button class="button secondary" id="cancel-learner" type="button"></button>
+        <button class="button primary" id="save-learner" type="submit"></button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog id="certificate-dialog" class="certificate-dialog" aria-labelledby="certificate-title">
-    <div class="certificate-setup">
-      <label for="certificate-name" id="certificate-name-label">Learner name</label>
-      <input id="certificate-name" type="text" maxlength="80" autocomplete="name" placeholder="Enter learner name">
-    </div>
     <article class="certificate-sheet">
       <img class="certificate-logo" src="echtit-logo.jpg" alt="Echtit logo" width="54" height="54">
       <p class="certificate-issuer" id="certificate-issuer"></p>

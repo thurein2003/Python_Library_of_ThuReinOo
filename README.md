@@ -10,6 +10,8 @@ Learn Python by building projects, from small exercises to larger applications.
 2. Edit the Python code and select **Run**.
 3. Save progress in this browser and move to the next project.
 
+Enter a learner name before starting. Changing the name resets the saved learning history. Progress stays in this browser and is not included in the site link.
+
 Solutions stay hidden until **Show solution** is selected.
 
 Choose English, Myanmar, or Thai, and switch between light and dark themes. Python runs in your browser with Pyodide; the first run needs an internet connection.
