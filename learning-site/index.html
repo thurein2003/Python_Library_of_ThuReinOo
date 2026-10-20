@@ -69,6 +69,10 @@
         <button class="icon-button" id="reset-progress" type="button" title="Clear saved progress" aria-label="Clear saved progress">↺</button>
       </div>
       <div id="lesson-content"></div>
+      <section id="certificate-access" class="certificate-access" aria-live="polite" hidden>
+        <span id="certificate-unlocked"></span>
+        <button class="button primary" id="certificate-button" type="button"></button>
+      </section>
     </section>
   </main>
 
@@ -78,6 +82,34 @@
       <p id="clear-progress-description">This only clears completed-project marks saved in this browser.</p>
       <div class="dialog-actions"><button class="button secondary" id="cancel-clear" value="cancel">Cancel</button><button class="button danger" id="confirm-clear" value="confirm">Clear progress</button></div>
     </form>
+  </dialog>
+
+  <dialog id="certificate-dialog" class="certificate-dialog" aria-labelledby="certificate-title">
+    <div class="certificate-setup">
+      <label for="certificate-name" id="certificate-name-label">Learner name</label>
+      <input id="certificate-name" type="text" maxlength="80" autocomplete="name" placeholder="Enter learner name">
+    </div>
+    <article class="certificate-sheet">
+      <img class="certificate-logo" src="echtit-logo.jpg" alt="Echtit logo" width="54" height="54">
+      <p class="certificate-issuer" id="certificate-issuer"></p>
+      <h2 id="certificate-title">Certificate of Completion</h2>
+      <p class="certificate-intro" id="certificate-intro"></p>
+      <p class="certificate-recipient" id="certificate-recipient"></p>
+      <p class="certificate-completed" id="certificate-completed-copy"></p>
+      <div class="certificate-stats">
+        <div><strong id="certificate-project-count">12</strong><span id="certificate-project-label"></span></div>
+        <div><strong id="certificate-solution-count">0</strong><span id="certificate-solution-label"></span></div>
+      </div>
+      <div class="certificate-footer">
+        <span><small id="certificate-issued-label"></small><strong id="certificate-date"></strong></span>
+        <span class="certificate-seal">ECHTIT</span>
+      </div>
+      <p class="certificate-note" id="certificate-note"></p>
+    </article>
+    <div class="certificate-actions">
+      <button class="button" id="close-certificate" type="button"></button>
+      <button class="button primary" id="print-certificate" type="button" disabled></button>
+    </div>
   </dialog>
 
   <footer class="site-footer">

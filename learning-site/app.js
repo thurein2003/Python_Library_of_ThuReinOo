@@ -3,6 +3,8 @@ import { solutions } from './solutions.js';
 import { copy } from './i18n.js';
 
 const STORAGE_KEY = 'python-project-library-progress-v1';
+const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
+const CERTIFICATE_NAME_KEY = 'python-project-library-certificate-name-v1';
 const lessonList = document.querySelector('#lesson-list');
 const lessonContent = document.querySelector('#lesson-content');
 const filter = document.querySelector('#level-filter');
@@ -10,12 +12,15 @@ const search = document.querySelector('#project-search');
 const progressCount = document.querySelector('#progress-count');
 const confirmDialog = document.querySelector('#confirm-dialog');
 const languageSelect = document.querySelector('#language-select');
+const certificateDialog = document.querySelector('#certificate-dialog');
+const certificateName = document.querySelector('#certificate-name');
 let activeId = localStorage.getItem('python-project-library-active') || lessons[0].id;
 let language = localStorage.getItem('python-project-library-language') || 'en';
 if (!copy[language]) language = 'en';
 let theme = localStorage.getItem('python-project-library-theme') || 'light';
 if (!['light', 'dark'].includes(theme)) theme = 'light';
 let completed = loadProgress();
+let solutionClicks = Math.max(0, Number.parseInt(localStorage.getItem(SOLUTION_CLICKS_KEY) || '0', 10) || 0);
 let worker;
 let runTimer;
 let currentOutput;
@@ -50,7 +55,12 @@ function applyPreferences() {
     '#small-level-option': 'small', '#medium-level-option': 'medium', '#large-level-option': 'large', '#search-label': 'search',
     '#local-python-label': 'runsLocally', '#breadcrumb-label': 'projectLibrary', '#clear-progress-title': 'clearTitle',
     '#clear-progress-description': 'clearDescription', '#cancel-clear': 'cancel', '#confirm-clear': 'clear',
-    '#footer-made': 'footerMade', '#footer-safety': 'footerSafety'
+    '#footer-made': 'footerMade', '#footer-safety': 'footerSafety', '#certificate-unlocked': 'certificateReady',
+    '#certificate-button': 'getCertificate', '#certificate-name-label': 'certificateNameLabel',
+    '#certificate-title': 'certificateTitle', '#certificate-issuer': 'certificateIssuer', '#certificate-intro': 'certificateIntro',
+    '#certificate-project-label': 'certificateProjectLabel', '#certificate-solution-label': 'certificateSolutionLabel',
+    '#certificate-issued-label': 'certificateIssuedLabel', '#certificate-note': 'certificateNote',
+    '#close-certificate': 'closeCertificate', '#print-certificate': 'printCertificate'
   };
   for (const [selector, key] of Object.entries(labels)) document.querySelector(selector).textContent = strings[key];
   search.placeholder = strings.findProject;
@@ -59,7 +69,9 @@ function applyPreferences() {
   const reset = document.querySelector('#reset-progress');
   reset.title = strings.clearProgress;
   reset.setAttribute('aria-label', strings.clearProgress);
+  certificateName.placeholder = strings.certificateNamePlaceholder;
   saveProgress();
+  renderCertificate();
 }
 
 function loadProgress() {
@@ -74,6 +86,19 @@ function loadProgress() {
 function saveProgress() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
   progressCount.textContent = t('progress', { done: completed.size, total: lessons.length });
+  document.querySelector('#certificate-access').hidden = completed.size !== lessons.length;
+}
+
+function renderCertificate() {
+  document.querySelector('#certificate-recipient').textContent = certificateName.value.trim() || t('certificateRecipientPlaceholder');
+  document.querySelector('#certificate-completed-copy').textContent = t('certificateCompleted', { total: lessons.length });
+  document.querySelector('#certificate-project-count').textContent = String(completed.size);
+  document.querySelector('#certificate-solution-count').textContent = String(solutionClicks);
+  const locales = { en: 'en-US', my: 'my-MM', th: 'th-TH' };
+  document.querySelector('#certificate-date').textContent = new Intl.DateTimeFormat(locales[language], {
+    year: 'numeric', month: 'long', day: 'numeric'
+  }).format(new Date());
+  document.querySelector('#print-certificate').disabled = !certificateName.value.trim();
 }
 
 function visibleLessons() {
@@ -151,6 +176,11 @@ function renderLesson() {
 
   document.querySelector('.solution-code').textContent = solutions[lesson.id];
   const solutionPanel = document.querySelector('.solution-panel');
+  solutionPanel.querySelector('summary').addEventListener('click', () => {
+    solutionClicks += 1;
+    localStorage.setItem(SOLUTION_CLICKS_KEY, String(solutionClicks));
+    renderCertificate();
+  });
   solutionPanel.addEventListener('toggle', () => {
     solutionPanel.querySelector('summary').textContent = t(solutionPanel.open ? 'hideSolution' : 'showSolution');
   });
@@ -274,6 +304,18 @@ languageSelect.addEventListener('change', () => {
 });
 document.querySelector('#light-mode').addEventListener('click', () => setTheme('light'));
 document.querySelector('#dark-mode').addEventListener('click', () => setTheme('dark'));
+document.querySelector('#certificate-button').addEventListener('click', () => {
+  certificateName.value = localStorage.getItem(CERTIFICATE_NAME_KEY) || '';
+  renderCertificate();
+  certificateDialog.showModal();
+  certificateName.focus();
+});
+certificateName.addEventListener('input', () => {
+  localStorage.setItem(CERTIFICATE_NAME_KEY, certificateName.value);
+  renderCertificate();
+});
+document.querySelector('#close-certificate').addEventListener('click', () => certificateDialog.close());
+document.querySelector('#print-certificate').addEventListener('click', () => window.print());
 
 function setTheme(nextTheme) {
   theme = nextTheme;
