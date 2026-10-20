@@ -1,10 +1,11 @@
+import { loadPyodide } from 'https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.mjs';
+
 const PYODIDE_VERSION = '314.0.7';
 const CDN_ROOT = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`;
 let runtimePromise;
 
 async function getRuntime() {
   if (!runtimePromise) {
-    importScripts(`${CDN_ROOT}pyodide.js`);
     runtimePromise = loadPyodide({ indexURL: CDN_ROOT });
   }
   return runtimePromise;
@@ -18,12 +19,12 @@ self.onmessage = async ({ data }) => {
     const output = [];
     pyodide.setStdout({
       batched(text) {
-        if (output.join('').length < 18000) output.push(text);
+        if (output.join('').length < 18000) output.push(`${text}\n`);
       }
     });
     pyodide.setStderr({
       batched(text) {
-        if (output.join('').length < 18000) output.push(text);
+        if (output.join('').length < 18000) output.push(`${text}\n`);
       }
     });
     const globals = pyodide.toPy({});

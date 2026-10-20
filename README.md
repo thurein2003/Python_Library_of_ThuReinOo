@@ -12,7 +12,7 @@ Learn Python by building projects, from small exercises to larger applications.
 
 Solutions stay hidden until **Show solution** is selected.
 
-Python runs in your browser with Pyodide. The first run needs an internet connection.
+Choose English, Myanmar, or Thai, and switch between light and dark themes. Python runs in your browser with Pyodide; the first run needs an internet connection.
 
 ## Quick guides
 
