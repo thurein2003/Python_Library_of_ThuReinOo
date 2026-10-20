@@ -1,6 +1,6 @@
 import { lessons } from './lessons.js';
 import { solutions } from './solutions.js';
-import { copy } from './i18n.js?v=learner-profile-2';
+import { copy } from './i18n.js?v=learner-profile-3';
 
 const STORAGE_KEY = 'python-project-library-progress-v1';
 const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
@@ -100,7 +100,7 @@ function applyPreferences() {
   }
 
   const labels = {
-    '#brand-title': 'title', '#brand-tagline': 'tagline', '#browser-note': 'browserNote', '#repository-label': 'repository',
+    '#brand-title': 'title', '#brand-tagline': 'tagline', '#browser-note': 'browserNote',
     '#workshop-label': 'workshop', '#project-paths-title': 'projectPaths', '#filter-label': 'filter', '#all-levels-option': 'allLevels',
     '#small-level-option': 'small', '#medium-level-option': 'medium', '#large-level-option': 'large', '#search-label': 'search',
     '#local-python-label': 'runsLocally', '#breadcrumb-label': 'projectLibrary', '#clear-progress-title': 'clearTitle',

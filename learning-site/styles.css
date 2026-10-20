@@ -71,8 +71,6 @@ a { color: inherit; }
 .theme-toggle button[aria-pressed="true"] { background: var(--control-bg); color: var(--ink); box-shadow: 0 0 0 1px var(--line); }
 .privacy-note::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: #59a47c; }
 .progress-count { color: var(--ink); font-weight: 600; }
-.repo-link { color: var(--forest-dark); font-weight: 700; text-decoration: none; }
-.repo-link span { margin-left: 3px; }
 
 .layout { display: grid; grid-template-columns: 310px minmax(0, 1fr); max-width: 1500px; min-height: calc(100vh - 112px); margin: 0 auto; }
 .library-panel { display: flex; flex-direction: column; min-width: 0; padding: 27px 17px 18px 25px; border-right: 1px solid var(--line); background: var(--panel-alt); }
