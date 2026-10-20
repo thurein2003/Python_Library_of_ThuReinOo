@@ -12,6 +12,16 @@ Learn Python by building projects, from small exercises to larger applications.
 
 Python runs in your browser with Pyodide. The first run needs an internet connection.
 
+## Quick guides
+
+**Edit and run a project**
+
+![Choose a project, edit the Python code, and press Run](docs/media/first-project.gif)
+
+**Choose a larger project and track progress**
+
+![Filter for a larger project, run it, and mark it complete](docs/media/capstone-path.gif)
+
 ## Run locally
 
 ```bash
