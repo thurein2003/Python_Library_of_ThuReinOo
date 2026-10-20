@@ -10,6 +10,8 @@ Learn Python by building projects, from small exercises to larger applications.
 2. Edit the Python code and select **Run**.
 3. Save progress in this browser and move to the next project.
 
+Solutions stay hidden until **Show solution** is selected.
+
 Python runs in your browser with Pyodide. The first run needs an internet connection.
 
 ## Quick guides

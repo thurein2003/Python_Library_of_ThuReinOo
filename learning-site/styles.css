@@ -100,6 +100,10 @@ a { color: inherit; }
 .output-status.error { color: #ff9f86; }
 .output { min-height: 84px; max-height: 210px; overflow: auto; margin: 0; padding: 12px 14px 15px; background: #101a16; color: #cee1c7; font: 11px/1.6 'DM Mono', monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
 .output.empty { color: #7f9187; }
+.solution-panel { max-width: 1080px; margin: 17px auto 0; border-top: 1px solid var(--line); }
+.solution-panel summary { width: fit-content; padding: 12px 0; color: var(--forest-dark); font-size: 12px; font-weight: 700; cursor: pointer; }
+.solution-panel summary:hover { color: var(--forest); }
+.solution-code { max-height: 480px; overflow: auto; margin: 0 0 8px; padding: 15px; border-radius: 5px; background: var(--code); color: #e8efe8; font: 11px/1.7 'DM Mono', ui-monospace, monospace; white-space: pre; }
 .lesson-navigation { display: flex; justify-content: space-between; align-items: center; max-width: 1080px; margin: 17px auto 0; }
 .button { min-height: 36px; padding: 0 13px; border: 1px solid #cad6ce; border-radius: 5px; background: white; color: var(--ink); font-size: 11px; font-weight: 700; cursor: pointer; }
 .button:hover { border-color: var(--forest); }

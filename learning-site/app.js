@@ -1,4 +1,5 @@
 import { lessons } from './lessons.js';
+import { solutions } from './solutions.js';
 
 const STORAGE_KEY = 'python-project-library-progress-v1';
 const lessonList = document.querySelector('#lesson-list');
@@ -90,8 +91,13 @@ function renderLesson() {
         <pre class="output empty" id="output">Run your program to see the result.</pre>
       </section>
     </div>
+    <details class="solution-panel">
+      <summary>Show solution</summary>
+      <pre class="solution-code"></pre>
+    </details>
     <div class="lesson-navigation"><button type="button" class="button" id="previous-project">← Previous</button><span class="lesson-position">${lessons.indexOf(lesson) + 1} of ${lessons.length}</span><button type="button" class="button primary" id="next-project">Next project →</button></div>`;
 
+  document.querySelector('.solution-code').textContent = solutions[lesson.id];
   const editor = document.querySelector('#code-editor');
   const savedDraft = localStorage.getItem(`python-project-draft-${lesson.id}`);
   editor.value = savedDraft ?? lesson.code;
