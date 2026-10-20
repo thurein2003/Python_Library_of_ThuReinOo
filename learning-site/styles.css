@@ -59,7 +59,7 @@ a { color: inherit; }
 
 .topbar { height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid var(--line); background: var(--panel); }
 .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
-.brand-mark { display: block; width: 46px; height: 46px; object-fit: contain; }
+.brand-mark { display: block; width: 52px; height: 52px; border-radius: 5px; object-fit: contain; }
 .brand strong, .brand small { display: block; }
 .brand strong { font-size: 14px; }
 .brand small { margin-top: 2px; color: var(--muted); font-size: 12px; }
@@ -179,7 +179,7 @@ a { color: inherit; }
   .topbar { height: auto; min-height: 64px; flex-wrap: wrap; gap: 10px; padding: 10px 14px; }
   .brand strong { font-size: 12px; }
   .brand small { font-size: 10px; }
-  .brand-mark { width: 36px; height: 36px; }
+  .brand-mark { width: 42px; height: 42px; }
   .topbar-meta { width: 100%; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: 10px; }
   .preferences { gap: 5px; }
   .language-control select { max-width: 105px; }
