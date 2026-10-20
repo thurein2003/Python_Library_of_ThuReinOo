@@ -5,6 +5,7 @@ import { copy } from './i18n.js';
 const STORAGE_KEY = 'python-project-library-progress-v1';
 const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
 const CERTIFICATE_NAME_KEY = 'python-project-library-certificate-name-v1';
+const VERIFIED_RUNS_KEY = 'python-project-library-verified-runs-v1';
 const lessonList = document.querySelector('#lesson-list');
 const lessonContent = document.querySelector('#lesson-content');
 const filter = document.querySelector('#level-filter');
@@ -20,10 +21,12 @@ if (!copy[language]) language = 'en';
 let theme = localStorage.getItem('python-project-library-theme') || 'light';
 if (!['light', 'dark'].includes(theme)) theme = 'light';
 let completed = loadProgress();
+let verifiedRuns = loadVerifiedRuns();
 let solutionClicks = Math.max(0, Number.parseInt(localStorage.getItem(SOLUTION_CLICKS_KEY) || '0', 10) || 0);
 let worker;
 let runTimer;
 let currentOutput;
+let activeRun;
 
 function t(key, values = {}) {
   return copy[language][key].replace(/\{(\w+)\}/g, (_, name) => values[name] ?? '');
@@ -58,7 +61,7 @@ function applyPreferences() {
     '#footer-made': 'footerMade', '#footer-safety': 'footerSafety', '#certificate-unlocked': 'certificateReady',
     '#certificate-button': 'getCertificate', '#certificate-name-label': 'certificateNameLabel',
     '#certificate-title': 'certificateTitle', '#certificate-issuer': 'certificateIssuer', '#certificate-intro': 'certificateIntro',
-    '#certificate-project-label': 'certificateProjectLabel', '#certificate-solution-label': 'certificateSolutionLabel',
+    '#certificate-project-label': 'certificateProjectLabel', '#certificate-verified-label': 'certificateVerifiedLabel', '#certificate-solution-label': 'certificateSolutionLabel',
     '#certificate-issued-label': 'certificateIssuedLabel', '#certificate-note': 'certificateNote',
     '#close-certificate': 'closeCertificate', '#print-certificate': 'printCertificate'
   };
@@ -83,22 +86,61 @@ function loadProgress() {
   }
 }
 
+function loadVerifiedRuns() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(VERIFIED_RUNS_KEY) || '[]');
+    return new Set(Array.isArray(saved) ? saved.filter(id => lessons.some(lesson => lesson.id === id)) : []);
+  } catch {
+    return new Set();
+  }
+}
+
 function saveProgress() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
   progressCount.textContent = t('progress', { done: completed.size, total: lessons.length });
-  document.querySelector('#certificate-access').hidden = completed.size !== lessons.length;
+  updateCertificateAccess();
+}
+
+function saveVerifiedRuns() {
+  localStorage.setItem(VERIFIED_RUNS_KEY, JSON.stringify([...verifiedRuns]));
+  updateCertificateAccess();
+  renderCertificate();
+}
+
+function updateCertificateAccess() {
+  const allCompleted = completed.size === lessons.length;
+  const allVerified = verifiedRuns.size === lessons.length;
+  document.querySelector('#certificate-access').hidden = !allCompleted;
+  document.querySelector('#certificate-unlocked').textContent = allVerified ? t('certificateReady') : t('certificateVerificationPending');
+  document.querySelector('#certificate-button').disabled = !allVerified;
 }
 
 function renderCertificate() {
   document.querySelector('#certificate-recipient').textContent = certificateName.value.trim() || t('certificateRecipientPlaceholder');
   document.querySelector('#certificate-completed-copy').textContent = t('certificateCompleted', { total: lessons.length });
   document.querySelector('#certificate-project-count').textContent = String(completed.size);
+  document.querySelector('#certificate-verified-count').textContent = String(verifiedRuns.size);
   document.querySelector('#certificate-solution-count').textContent = String(solutionClicks);
   const locales = { en: 'en-US', my: 'my-MM', th: 'th-TH' };
   document.querySelector('#certificate-date').textContent = new Intl.DateTimeFormat(locales[language], {
     year: 'numeric', month: 'long', day: 'numeric'
   }).format(new Date());
   document.querySelector('#print-certificate').disabled = !certificateName.value.trim();
+}
+
+function hasChangedStarter(sourceLesson, editor) {
+  const code = editor.value.trim();
+  return code.length > 0 && code !== sourceLesson.code.trim();
+}
+
+function syncCompletionControl(sourceLesson, editor) {
+  const verified = verifiedRuns.has(sourceLesson.id) && hasChangedStarter(sourceLesson, editor);
+  const button = document.querySelector('#next-project');
+  button.disabled = !verified;
+  button.textContent = completed.has(sourceLesson.id)
+    ? (verified ? t('completed') : t('verifyFirst'))
+    : (verified ? t('markComplete') : t('verifyFirst'));
+  document.querySelector('#completion-requirement').textContent = verified ? t('readyToComplete') : t('editRunToComplete');
 }
 
 function visibleLessons() {
@@ -172,7 +214,8 @@ function renderLesson() {
       <summary>${t('showSolution')}</summary>
       <pre class="solution-code"></pre>
     </details>
-    <div class="lesson-navigation"><button type="button" class="button" id="previous-project">${t('previous')}</button><span class="lesson-position">${lessons.indexOf(sourceLesson) + 1} ${t('of')} ${lessons.length}</span><button type="button" class="button primary" id="next-project">${t('next')}</button></div>`;
+    <div class="lesson-navigation"><button type="button" class="button" id="previous-project">${t('previous')}</button><span class="lesson-position">${lessons.indexOf(sourceLesson) + 1} ${t('of')} ${lessons.length}</span><button type="button" class="button primary" id="next-project"></button></div>
+    <p class="completion-requirement" id="completion-requirement" aria-live="polite"></p>`;
 
   document.querySelector('.solution-code').textContent = solutions[lesson.id];
   const solutionPanel = document.querySelector('.solution-panel');
@@ -187,10 +230,15 @@ function renderLesson() {
   const editor = document.querySelector('#code-editor');
   const savedDraft = localStorage.getItem(`python-project-draft-${lesson.id}`);
   editor.value = savedDraft ?? lesson.code;
+  syncCompletionControl(sourceLesson, editor);
   currentOutput = document.querySelector('#output');
   const runButton = document.querySelector('#run-code');
 
-  editor.addEventListener('input', () => localStorage.setItem(`python-project-draft-${lesson.id}`, editor.value));
+  editor.addEventListener('input', () => {
+    localStorage.setItem(`python-project-draft-${lesson.id}`, editor.value);
+    if (verifiedRuns.delete(sourceLesson.id)) saveVerifiedRuns();
+    syncCompletionControl(sourceLesson, editor);
+  });
   editor.addEventListener('keydown', event => {
     if (event.key === 'Tab') {
       event.preventDefault();
@@ -209,9 +257,9 @@ function renderLesson() {
   });
   runButton.addEventListener('click', () => runCode(editor.value, runButton));
   document.querySelector('#previous-project').disabled = lessons.indexOf(sourceLesson) === 0;
-  document.querySelector('#next-project').textContent = completed.has(lesson.id) ? t('completed') : t('markComplete');
   document.querySelector('#previous-project').addEventListener('click', () => navigate(-1));
   document.querySelector('#next-project').addEventListener('click', () => {
+    if (!verifiedRuns.has(sourceLesson.id) || !hasChangedStarter(sourceLesson, editor)) return;
     completed.add(lesson.id);
     saveProgress();
     renderList();
@@ -224,6 +272,7 @@ function renderLesson() {
 function selectLesson(id) {
   if (worker) worker.terminate();
   worker = null;
+  activeRun = null;
   clearTimeout(runTimer);
   activeId = id;
   renderLesson();
@@ -245,17 +294,27 @@ function createWorker() {
       runTimer = setTimeout(() => {
         worker?.terminate();
         worker = null;
+        activeRun = null;
         showOutput(t('stopped'), t('runStopped'), true);
         document.querySelector('#run-code').disabled = false;
       }, 12000);
       return;
     }
     clearTimeout(runTimer);
+    if (type === 'done' && activeRun?.lessonId === activeId && activeRun.changed
+      && document.querySelector('#code-editor')?.value === activeRun.code) {
+      verifiedRuns.add(activeRun.lessonId);
+      saveVerifiedRuns();
+      const sourceLesson = lessons.find(lesson => lesson.id === activeRun.lessonId);
+      syncCompletionControl(sourceLesson, document.querySelector('#code-editor'));
+    }
+    activeRun = null;
     showOutput(type === 'error' ? t('error') : t('finished'), output || t('noOutput'), type === 'error');
     document.querySelector('#run-code').disabled = false;
   });
   worker.addEventListener('error', event => {
     clearTimeout(runTimer);
+    activeRun = null;
     showOutput(t('error'), t('runtimeError'), true);
     worker?.terminate();
     worker = null;
@@ -265,6 +324,8 @@ function createWorker() {
 
 function runCode(code, button) {
   if (!worker) createWorker();
+  const sourceLesson = lessons.find(lesson => lesson.id === activeId);
+  activeRun = { lessonId: activeId, code, changed: code.trim().length > 0 && code.trim() !== sourceLesson.code.trim() };
   button.disabled = true;
   showOutput(t('startingPython'), t('loadingPython'), false);
   worker.postMessage({ type: 'run', code });
@@ -272,6 +333,7 @@ function runCode(code, button) {
   runTimer = setTimeout(() => {
     worker?.terminate();
     worker = null;
+    activeRun = null;
     showOutput(t('timedOut'), t('loadTimedOut'), true);
     button.disabled = false;
   }, 90000);
@@ -335,7 +397,9 @@ document.querySelector('#reset-progress').addEventListener('click', async () => 
 
 function clearProgress() {
   completed = new Set();
+  verifiedRuns = new Set();
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(VERIFIED_RUNS_KEY);
   saveProgress();
   renderList();
   renderLesson();

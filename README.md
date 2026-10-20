@@ -14,7 +14,7 @@ Solutions stay hidden until **Show solution** is selected.
 
 Choose English, Myanmar, or Thai, and switch between light and dark themes. Python runs in your browser with Pyodide; the first run needs an internet connection.
 
-Complete all 12 projects to unlock a printable certificate. It includes solution-button clicks saved in this browser.
+Edit and successfully run all 12 projects before marking them complete to unlock a printable certificate. It reports solution-button clicks saved in this browser.
 
 ## Quick guides
 
