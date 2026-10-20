@@ -1,1 +1,1 @@
-# Safety note: ZIP password guessing is not implemented.\n
+# Safety note: ZIP password guessing is not implemented.

@@ -1,1 +1,1 @@
-# Safety note: SSRF exploit payloads are not included.\n
+# Safety note: SSRF exploit payloads are not included.

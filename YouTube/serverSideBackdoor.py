@@ -1,1 +1,1 @@
-# Safety note: remote command execution is not implemented.\n
+# Safety note: remote command execution is not implemented.

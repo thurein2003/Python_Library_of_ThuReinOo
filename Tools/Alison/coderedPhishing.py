@@ -1,1 +1,1 @@
-# Safety note: phishing generation and email delivery are removed.\n
+# Safety note: phishing generation and email delivery are removed.

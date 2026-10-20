@@ -1,1 +1,1 @@
-# Safety note: password guessing and cracking are not implemented.\n
+# Safety note: password guessing and cracking are not implemented.

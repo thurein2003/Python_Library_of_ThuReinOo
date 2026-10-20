@@ -1,1 +1,1 @@
-# Safety note: keystroke logging and covert transfer are not implemented.\n
+# Safety note: keystroke logging and covert transfer are not implemented.
