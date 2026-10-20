@@ -1,16 +1,16 @@
 # Python Project Library
 
-Learn Python by building projects, from short beginner exercises to larger capstones.
+Learn Python by building projects, from small exercises to larger applications.
 
-The site is prepared for Vercel deployment. Connect the repository to Vercel to publish it; only `learning-site/` is served, not the rest of this library.
+**Live site:** https://thurein2003.github.io/Python_Library_of_ThuReinOo/
 
-The interactive site includes 12 guided projects across small, medium, and large tracks. Python runs in your browser with Pyodide; drafts and completion marks stay in that browser. Vercel Hobby is free for personal, non-commercial projects.
+## Try it
 
-## Repository
+1. Choose a project and read its challenge.
+2. Edit the Python code and select **Run**.
+3. Save progress in this browser and move to the next project.
 
-- `learning-site/`: interactive project lessons and browser editor.
-- `CompuTech/`, `FreeCodeCamp/`, `Codered/`, `National cybercity/`, `Projects/`, `Tools/`, and `YouTube/`: existing study notes, examples, and projects. Their directories are preserved.
-- `PythonNoteFromPython.pdf`: external reference collected from [The Python Code](https://thepythoncode.com/).
+Python runs in your browser with Pyodide. The first run needs an internet connection.
 
 ## Run locally
 
@@ -18,10 +18,6 @@ The interactive site includes 12 guided projects across small, medium, and large
 python3 -m http.server 8000 --directory learning-site
 ```
 
-Open <http://localhost:8000>. The first code run downloads the pinned Pyodide runtime from jsDelivr, so an internet connection is required.
+Open http://localhost:8000.
 
-## Add a project
-
-Add a lesson to `learning-site/lessons.js` with a title, track, learning goals, challenge, hint, and runnable starter code. Test it in the site before opening a pull request. `vercel.json` publishes only the learning site directory.
-
-Contributions and corrections are welcome. Review code before running it; the browser editor is for learning and is not a security boundary.
+The original study folders are kept. The learning site is in `learning-site/`.
