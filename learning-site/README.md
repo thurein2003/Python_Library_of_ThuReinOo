@@ -10,7 +10,7 @@ From the repository root:
 python3 -m http.server 8000 --directory learning-site
 ```
 
-Open <http://localhost:8000>. Learners enter a name before starting; changing it clears that browser's project progress, run checks, drafts, and solution-click count. The name and learning history stay in local browser storage and are never encoded in the shareable URL. The first run loads Pyodide `314.0.7` from jsDelivr and needs an internet connection. Code runs in a time-limited Web Worker and is not sent to a project server.
+Open <http://localhost:8000>. Learners enter a name before starting; changing it clears that browser's project progress, run checks, drafts, and solution-click count. The name and learning history stay in local browser storage and are never encoded in the shareable URL. If browser storage is blocked, the app falls back to tab-only memory and displays a warning. The first run loads Pyodide `314.0.7` from jsDelivr and needs an internet connection. Code runs in a time-limited Web Worker and is not sent to a project server.
 
 ## Add a lesson
 

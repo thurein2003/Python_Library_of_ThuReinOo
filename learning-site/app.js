@@ -7,6 +7,40 @@ const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
 const CERTIFICATE_NAME_KEY = 'python-project-library-certificate-name-v1';
 const VERIFIED_RUNS_KEY = 'python-project-library-verified-runs-v1';
 const LEARNER_NAME_KEY = 'python-project-library-learner-name-v1';
+const sessionFallback = new Map();
+let sessionOnly = false;
+const storage = {
+  getItem(key) {
+    try { return window.localStorage.getItem(key); }
+    catch {
+      sessionOnly = true;
+      return sessionFallback.get(key) ?? null;
+    }
+  },
+  setItem(key, value) {
+    const text = String(value);
+    try {
+      window.localStorage.setItem(key, text);
+      sessionFallback.delete(key);
+    } catch {
+      sessionOnly = true;
+      sessionFallback.set(key, text);
+    }
+  },
+  removeItem(key) {
+    sessionFallback.delete(key);
+    try { window.localStorage.removeItem(key); }
+    catch { sessionOnly = true; }
+  },
+  keys() {
+    try {
+      return Array.from({ length: window.localStorage.length }, (_, index) => window.localStorage.key(index)).filter(Boolean);
+    } catch {
+      sessionOnly = true;
+      return [...sessionFallback.keys()];
+    }
+  }
+};
 const lessonList = document.querySelector('#lesson-list');
 const lessonContent = document.querySelector('#lesson-content');
 const filter = document.querySelector('#level-filter');
@@ -17,25 +51,25 @@ const languageSelect = document.querySelector('#language-select');
 const certificateDialog = document.querySelector('#certificate-dialog');
 const learnerDialog = document.querySelector('#learner-dialog');
 const learnerNameInput = document.querySelector('#learner-name-input');
-let learnerName = localStorage.getItem(LEARNER_NAME_KEY) || '';
+let learnerName = storage.getItem(LEARNER_NAME_KEY) || '';
 if (!learnerName) {
-  for (const key of Object.keys(localStorage)) {
-    if (key.startsWith('python-project-draft-')) localStorage.removeItem(key);
+  for (const key of storage.keys()) {
+    if (key.startsWith('python-project-draft-')) storage.removeItem(key);
   }
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(VERIFIED_RUNS_KEY);
-  localStorage.removeItem(SOLUTION_CLICKS_KEY);
-  localStorage.removeItem(CERTIFICATE_NAME_KEY);
-  localStorage.removeItem('python-project-library-active');
+  storage.removeItem(STORAGE_KEY);
+  storage.removeItem(VERIFIED_RUNS_KEY);
+  storage.removeItem(SOLUTION_CLICKS_KEY);
+  storage.removeItem(CERTIFICATE_NAME_KEY);
+  storage.removeItem('python-project-library-active');
 }
-let activeId = localStorage.getItem('python-project-library-active') || lessons[0].id;
-let language = localStorage.getItem('python-project-library-language') || 'en';
+let activeId = storage.getItem('python-project-library-active') || lessons[0].id;
+let language = storage.getItem('python-project-library-language') || 'en';
 if (!copy[language]) language = 'en';
-let theme = localStorage.getItem('python-project-library-theme') || 'light';
+let theme = storage.getItem('python-project-library-theme') || 'light';
 if (!['light', 'dark'].includes(theme)) theme = 'light';
 let completed = loadProgress();
 let verifiedRuns = loadVerifiedRuns();
-let solutionClicks = Math.max(0, Number.parseInt(localStorage.getItem(SOLUTION_CLICKS_KEY) || '0', 10) || 0);
+let solutionClicks = Math.max(0, Number.parseInt(storage.getItem(SOLUTION_CLICKS_KEY) || '0', 10) || 0);
 let worker;
 let runTimer;
 let currentOutput;
@@ -91,12 +125,13 @@ function applyPreferences() {
   document.querySelector('#learner-name-display').textContent = learnerName;
   document.querySelector('#change-learner').hidden = !learnerName;
   saveProgress();
+  document.querySelector('#browser-note').textContent = sessionOnly ? strings.sessionOnlyNotice : strings.browserNote;
   renderCertificate();
 }
 
 function loadProgress() {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const saved = JSON.parse(storage.getItem(STORAGE_KEY) || '[]');
     return new Set(Array.isArray(saved) ? saved.filter(id => lessons.some(lesson => lesson.id === id)) : []);
   } catch {
     return new Set();
@@ -105,7 +140,7 @@ function loadProgress() {
 
 function loadVerifiedRuns() {
   try {
-    const saved = JSON.parse(localStorage.getItem(VERIFIED_RUNS_KEY) || '[]');
+    const saved = JSON.parse(storage.getItem(VERIFIED_RUNS_KEY) || '[]');
     return new Set(Array.isArray(saved) ? saved.filter(id => lessons.some(lesson => lesson.id === id)) : []);
   } catch {
     return new Set();
@@ -113,13 +148,13 @@ function loadVerifiedRuns() {
 }
 
 function saveProgress() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
+  storage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
   progressCount.textContent = t('progress', { done: completed.size, total: lessons.length });
   updateCertificateAccess();
 }
 
 function saveVerifiedRuns() {
-  localStorage.setItem(VERIFIED_RUNS_KEY, JSON.stringify([...verifiedRuns]));
+  storage.setItem(VERIFIED_RUNS_KEY, JSON.stringify([...verifiedRuns]));
   updateCertificateAccess();
   renderCertificate();
 }
@@ -206,7 +241,7 @@ function renderLesson() {
   const sourceLesson = lessons.find(item => item.id === activeId) || lessons[0];
   const lesson = localizedLesson(sourceLesson);
   activeId = lesson.id;
-  localStorage.setItem('python-project-library-active', activeId);
+  storage.setItem('python-project-library-active', activeId);
   document.querySelector('#crumb-title').textContent = lesson.title;
   const goals = lesson.goals.map(goal => `<li>${escapeHtml(goal)}</li>`).join('');
   lessonContent.innerHTML = `
@@ -238,21 +273,21 @@ function renderLesson() {
   const solutionPanel = document.querySelector('.solution-panel');
   solutionPanel.querySelector('summary').addEventListener('click', () => {
     solutionClicks += 1;
-    localStorage.setItem(SOLUTION_CLICKS_KEY, String(solutionClicks));
+    storage.setItem(SOLUTION_CLICKS_KEY, String(solutionClicks));
     renderCertificate();
   });
   solutionPanel.addEventListener('toggle', () => {
     solutionPanel.querySelector('summary').textContent = t(solutionPanel.open ? 'hideSolution' : 'showSolution');
   });
   const editor = document.querySelector('#code-editor');
-  const savedDraft = localStorage.getItem(`python-project-draft-${lesson.id}`);
+  const savedDraft = storage.getItem(`python-project-draft-${lesson.id}`);
   editor.value = savedDraft ?? lesson.code;
   syncCompletionControl(sourceLesson, editor);
   currentOutput = document.querySelector('#output');
   const runButton = document.querySelector('#run-code');
 
   editor.addEventListener('input', () => {
-    localStorage.setItem(`python-project-draft-${lesson.id}`, editor.value);
+    storage.setItem(`python-project-draft-${lesson.id}`, editor.value);
     if (verifiedRuns.delete(sourceLesson.id)) saveVerifiedRuns();
     syncCompletionControl(sourceLesson, editor);
   });
@@ -373,7 +408,7 @@ filter.addEventListener('change', renderList);
 search.addEventListener('input', renderList);
 languageSelect.addEventListener('change', () => {
   language = languageSelect.value;
-  localStorage.setItem('python-project-library-language', language);
+  storage.setItem('python-project-library-language', language);
   if (worker) worker.terminate();
   worker = null;
   clearTimeout(runTimer);
@@ -408,7 +443,7 @@ document.querySelector('#learner-form').addEventListener('submit', event => {
   }
   if (nextName !== learnerName) resetLearnerData();
   learnerName = nextName;
-  localStorage.setItem(LEARNER_NAME_KEY, learnerName);
+  storage.setItem(LEARNER_NAME_KEY, learnerName);
   document.querySelector('#cancel-learner').hidden = !learnerName;
   applyPreferences();
   renderList();
@@ -418,7 +453,7 @@ document.querySelector('#learner-form').addEventListener('submit', event => {
 
 function setTheme(nextTheme) {
   theme = nextTheme;
-  localStorage.setItem('python-project-library-theme', theme);
+  storage.setItem('python-project-library-theme', theme);
   applyPreferences();
 }
 
@@ -435,22 +470,22 @@ document.querySelector('#reset-progress').addEventListener('click', async () => 
 function clearProgress() {
   completed = new Set();
   verifiedRuns = new Set();
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(VERIFIED_RUNS_KEY);
+  storage.removeItem(STORAGE_KEY);
+  storage.removeItem(VERIFIED_RUNS_KEY);
   saveProgress();
   renderList();
   renderLesson();
 }
 
 function resetLearnerData() {
-  for (const key of Object.keys(localStorage)) {
-    if (key.startsWith('python-project-draft-')) localStorage.removeItem(key);
+  for (const key of storage.keys()) {
+    if (key.startsWith('python-project-draft-')) storage.removeItem(key);
   }
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(VERIFIED_RUNS_KEY);
-  localStorage.removeItem(SOLUTION_CLICKS_KEY);
-  localStorage.removeItem(CERTIFICATE_NAME_KEY);
-  localStorage.removeItem('python-project-library-active');
+  storage.removeItem(STORAGE_KEY);
+  storage.removeItem(VERIFIED_RUNS_KEY);
+  storage.removeItem(SOLUTION_CLICKS_KEY);
+  storage.removeItem(CERTIFICATE_NAME_KEY);
+  storage.removeItem('python-project-library-active');
   completed = new Set();
   verifiedRuns = new Set();
   solutionClicks = 0;

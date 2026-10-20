@@ -11,6 +11,7 @@ Learn Python by building projects, from small exercises to larger applications.
 3. Save progress in this browser and move to the next project.
 
 Enter a learner name before starting. Changing the name resets the saved learning history. Progress stays in this browser and is not included in the site link.
+If browser storage is blocked, the site uses temporary tab-only storage and warns you that progress will not persist.
 
 Solutions stay hidden until **Show solution** is selected.
 
