@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#15221f">
+  <meta name="description" content="Learn Python by building guided projects, from first programs to larger applications.">
+  <title>Python Project Library | Thu Rein Oo</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Python Project Library home">
+      <span class="brand-mark">Py</span>
+      <span><strong>Python Project Library</strong><small>Learn by building</small></span>
+    </a>
+    <div class="topbar-meta">
+      <span class="privacy-note">Code runs in your browser</span>
+      <span class="progress-count" id="progress-count">0 / 12 complete</span>
+      <a class="repo-link" href="https://github.com/thurein2003/Python_Library_of_ThuReinOo" target="_blank" rel="noreferrer">Repository <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="library-panel" aria-label="Project library">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">YOUR WORKSHOP</p>
+          <h1>Project paths</h1>
+        </div>
+        <label class="sr-only" for="level-filter">Filter by project size</label>
+        <select id="level-filter" aria-label="Filter projects">
+          <option value="all">All levels</option>
+          <option value="Small">Small</option>
+          <option value="Medium">Medium</option>
+          <option value="Large">Large</option>
+        </select>
+      </div>
+      <label class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <span class="sr-only">Search projects</span>
+        <input id="project-search" type="search" placeholder="Find a project" autocomplete="off">
+      </label>
+      <nav id="lesson-list" class="lesson-list" aria-label="Projects"></nav>
+      <div class="side-footer">
+        <span class="status-dot"></span>
+        <span>Python runs locally in this tab</span>
+      </div>
+    </aside>
+
+    <section class="lesson-panel" aria-live="polite">
+      <div class="lesson-toolbar">
+        <div class="breadcrumbs"><span>Project library</span><span aria-hidden="true">/</span><strong id="crumb-title">Tip calculator</strong></div>
+        <button class="icon-button" id="reset-progress" type="button" title="Clear saved progress" aria-label="Clear saved progress">↺</button>
+      </div>
+      <div id="lesson-content"></div>
+    </section>
+  </main>
+
+  <dialog id="confirm-dialog" class="confirm-dialog">
+    <form method="dialog">
+      <h2>Clear saved progress?</h2>
+      <p>This only clears completed-project marks saved in this browser.</p>
+      <div class="dialog-actions"><button class="button secondary" value="cancel">Cancel</button><button class="button danger" value="confirm">Clear progress</button></div>
+    </form>
+  </dialog>
+
+  <footer class="site-footer">
+    <span>Made for learning Python one project at a time.</span>
+    <span>Do not run code you do not trust.</span>
+  </footer>
+</body>
+</html>
