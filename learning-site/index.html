@@ -6,12 +6,13 @@
   <meta name="theme-color" content="#f4f7f3">
   <meta name="description" content="Learn Python by building guided projects, from first programs to larger applications.">
   <title>Python Project Library | Thu Rein Oo</title>
-  <link rel="stylesheet" href="styles.css?v=progress-transfer-5">
-  <script type="module" src="app.js?v=progress-transfer-5"></script>
+  <link rel="stylesheet" href="styles.css?v=learning-path-6">
+  <script type="module" src="app.js?v=learning-path-6"></script>
 </head>
 <body>
+  <a class="skip-link" id="skip-to-lesson" href="#lesson-content">Skip to lesson</a>
   <header class="topbar">
-    <a class="brand" href="./" aria-label="Python Project Library home">
+    <a class="brand" href="./">
       <img class="brand-mark" src="echtit-logo.jpg" alt="Echtit logo" width="52" height="52">
       <span><strong id="brand-title">Python Project Library</strong><small id="brand-tagline">Learn by building</small></span>
     </a>
@@ -31,7 +32,7 @@
         </div>
       </div>
       <span class="privacy-note" id="browser-note">Code runs in your browser</span>
-      <span class="progress-count" id="progress-count">0 / 17 complete</span>
+      <span class="progress-count" id="progress-count">0 / 20 complete</span>
       <span class="learner-profile"><span id="learner-name-display"></span><button id="change-learner" type="button"></button></span>
     </div>
   </header>
@@ -63,9 +64,9 @@
       </div>
     </aside>
 
-    <section class="lesson-panel" aria-live="polite">
+    <section class="lesson-panel" aria-labelledby="crumb-title">
       <div class="lesson-toolbar">
-        <div class="breadcrumbs"><span id="breadcrumb-label">Project library</span><span aria-hidden="true">/</span><strong id="crumb-title">Tip calculator</strong></div>
+      <div class="breadcrumbs"><span id="breadcrumb-label">Project library</span><span aria-hidden="true">/</span><strong id="crumb-title" aria-live="polite" aria-atomic="true">Tip calculator</strong></div>
         <div class="toolbar-actions">
           <details class="progress-menu" id="progress-menu">
             <summary class="icon-button" id="progress-menu-button" aria-label="Transfer progress" title="Transfer progress">⇅<span class="sr-only" id="progress-menu-label">Transfer progress</span></summary>
@@ -79,7 +80,7 @@
           <button class="icon-button" id="reset-progress" type="button" title="Clear saved progress" aria-label="Clear saved progress">↺</button>
         </div>
       </div>
-      <div id="lesson-content"></div>
+      <div id="lesson-content" tabindex="-1"></div>
       <section id="certificate-access" class="certificate-access" aria-live="polite" hidden>
         <span id="certificate-unlocked"></span>
         <div class="certificate-actions-inline">
@@ -124,8 +125,8 @@
       <p class="certificate-recipient" id="certificate-recipient"></p>
       <p class="certificate-completed" id="certificate-completed-copy"></p>
       <div class="certificate-stats">
-        <div><strong id="certificate-project-count">17</strong><span id="certificate-project-label"></span></div>
-        <div><strong id="certificate-verified-count">17</strong><span id="certificate-verified-label"></span></div>
+        <div><strong id="certificate-project-count">20</strong><span id="certificate-project-label"></span></div>
+        <div><strong id="certificate-verified-count">20</strong><span id="certificate-verified-label"></span></div>
         <div><strong id="certificate-solution-count">0</strong><span id="certificate-solution-label"></span></div>
       </div>
       <div class="certificate-footer">

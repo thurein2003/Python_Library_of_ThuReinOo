@@ -388,5 +388,75 @@ class ExpenseTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             make_expense("   ", 5)
 
-unittest.main(argv=[""], exit=False)`
+unittest.main(argv=[""], exit=False)`,
+
+  'api-response-analyzer': `import json
+
+response_text = '[{"userId": 7, "id": 3, "title": "Review Python functions", "completed": false}, {"userId": 7, "id": 4, "title": "Practice dictionaries", "completed": true}]'
+records = json.loads(response_text)
+required_fields = {"userId", "id", "title", "completed"}
+
+def summarize_task(record):
+    missing = required_fields - record.keys()
+    if missing:
+        raise ValueError(f"Missing fields: {sorted(missing)}")
+    return {"id": record["id"], "title": record["title"], "completed": bool(record["completed"])}
+
+tasks = [summarize_task(record) for record in records]
+complete_count = sum(task["completed"] for task in tasks)
+print(f"Tasks: {len(tasks)}; complete: {complete_count}")
+for task in tasks:
+    state = "complete" if task["completed"] else "still open"
+    print(f"{task['id']}: {task['title']} ({state})")`,
+
+  'command-line-task-manager': `import argparse
+
+def build_parser():
+    parser = argparse.ArgumentParser(prog="tasks")
+    commands = parser.add_subparsers(dest="command", required=True)
+    add = commands.add_parser("add")
+    add.add_argument("title")
+    complete = commands.add_parser("complete")
+    complete.add_argument("number", type=int)
+    commands.add_parser("list")
+    return parser
+
+def run_command(tasks, args):
+    if args.command == "add":
+        title = args.title.strip()
+        if not title:
+            raise ValueError("Task title cannot be empty")
+        tasks.append({"title": title, "done": False})
+        print(f"Added: {title}")
+    elif args.command == "complete":
+        index = args.number - 1
+        if index < 0 or index >= len(tasks):
+            raise IndexError("No task with that number")
+        tasks[index]["done"] = True
+        print(f"Completed: {tasks[index]['title']}")
+    elif args.command == "list":
+        for number, task in enumerate(tasks, start=1):
+            marker = "✓" if task["done"] else " "
+            print(f"{number}. [{marker}] {task['title']}")
+
+tasks = []
+parser = build_parser()
+for command_line in [["add", "Read chapter"], ["add", "Practice loops"], ["complete", "1"], ["list"]]:
+    run_command(tasks, parser.parse_args(command_line))`,
+
+  'sqlite-reading-list': `import sqlite3
+
+with sqlite3.connect(":memory:") as connection:
+    connection.execute("CREATE TABLE books (title TEXT, pages INTEGER, finished INTEGER)")
+    connection.executemany(
+        "INSERT INTO books VALUES (?, ?, ?)",
+        [("Python Basics", 180, 0), ("Data with Python", 240, 1), ("SQL Notes", 120, 0)],
+    )
+    connection.execute("UPDATE books SET finished = 1 WHERE title = ?", ("Python Basics",))
+    unread = connection.execute("SELECT title, pages FROM books WHERE finished = 0 ORDER BY title").fetchall()
+    pages_left = connection.execute("SELECT COALESCE(SUM(pages), 0) FROM books WHERE finished = 0").fetchone()[0]
+
+    for title, pages in unread:
+        print(f"To read: {title} ({pages} pages)")
+    print(f"Unread pages: {pages_left}")`
 };

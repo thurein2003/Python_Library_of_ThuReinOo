@@ -1,6 +1,6 @@
 # Learning Site
 
-The static Python project lessons are deployed to GitHub Pages. The repository also includes a Vercel configuration for an optional alternative host.
+The static Python project lessons are deployed to GitHub Pages. The repository also includes a Vercel configuration for an optional alternative host. The [recommended learning sequence](../docs/LEARNING_PATH.md) groups all 20 lessons by the concepts they build on.
 
 ## Preview
 
@@ -14,7 +14,7 @@ Open <http://localhost:8000>. Learners enter a name before starting; changing th
 
 ## Add a lesson
 
-Add a unique lesson object to `additional-lessons.js`. Include a track (`Small`, `Medium`, or `Large`), duration, topic, summary, learning goals, task, hint, and Python code. Add its solution to `solutions.js` and its English, Myanmar, and Thai text to `additional-copy.js`. Keep examples educational and safe.
+Add a unique lesson object to `additional-lessons.js`. Include a track (`Small`, `Medium`, or `Large`), duration, topic, summary, learning goals, task, hint, and Python code. Add its solution to `solutions.js`, its position in `learning-path.js`, and its English, Myanmar, and Thai text to `additional-copy.js`. Prefer fixtures over live services so lessons run consistently and do not depend on learner credentials or third-party API availability. Keep examples educational and safe.
 
 ## Optional Vercel deployment
 
@@ -22,4 +22,4 @@ Import this repository into Vercel and deploy it. Vercel reads the root `vercel.
 
 ## Validate content
 
-From this directory, run `npm run check` for JavaScript syntax checks and `npm test` for lesson, translation, and progress-backup validation. These checks use Node's built-in tools and install no packages.
+From this directory, run `npm ci`, `npm run check`, and `npm test` for JavaScript syntax, lesson execution, translation, and progress-backup checks. Run `npx playwright install chromium` once, then `npm run test:e2e` for browser flows, responsive layout, and an automated accessibility audit. The browser runner test downloads the pinned Pyodide runtime from jsDelivr.

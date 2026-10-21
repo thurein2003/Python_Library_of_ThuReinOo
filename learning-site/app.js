@@ -1,7 +1,8 @@
 import { lessons } from './lessons.js';
 import { solutions } from './solutions.js';
+import { learningPaths } from './learning-path.js';
 import { createProgressBackup, validateProgressBackup } from './progress.js';
-import { copy } from './i18n.js?v=progress-transfer-5';
+import { copy } from './i18n.js?v=learning-path-6';
 
 const STORAGE_KEY = 'python-project-library-progress-v1';
 const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
@@ -101,6 +102,7 @@ function applyPreferences() {
   }
 
   const labels = {
+    '#skip-to-lesson': 'skipToLesson',
     '#brand-title': 'title', '#brand-tagline': 'tagline', '#browser-note': 'browserNote',
     '#workshop-label': 'workshop', '#project-paths-title': 'projectPaths', '#filter-label': 'filter', '#all-levels-option': 'allLevels',
     '#small-level-option': 'small', '#medium-level-option': 'medium', '#large-level-option': 'large', '#search-label': 'search',
@@ -216,14 +218,14 @@ function visibleLessons() {
 function renderList() {
   lessonList.replaceChildren();
   const visible = visibleLessons();
-  for (const level of ['Small', 'Medium', 'Large']) {
-    const groupLessons = visible.filter(lesson => lesson.level === level);
+  for (const path of learningPaths) {
+    const groupLessons = path.lessonIds.map(id => visible.find(lesson => lesson.id === id)).filter(Boolean);
     if (!groupLessons.length) continue;
     const group = document.createElement('div');
     group.className = 'track-group';
     const heading = document.createElement('div');
     heading.className = 'track-title';
-    heading.innerHTML = `<span>${t(level.toLowerCase())} ${t('projects')}</span><small>${groupLessons.length}</small>`;
+    heading.innerHTML = `<span>${t(path.label)}</span><small>${groupLessons.length}</small>`;
     group.append(heading);
     groupLessons.forEach(lesson => {
       const button = document.createElement('button');
@@ -266,7 +268,7 @@ function renderLesson() {
       <section class="editor-panel" aria-label="${t('editor')}">
         <div class="editor-head"><span class="file-name">main.py</span><div class="editor-controls"><button type="button" class="editor-button" id="reset-code">${t('reset')}</button><button type="button" class="editor-button run" id="run-code">▶ ${t('run')}</button></div></div>
         <label class="sr-only" for="code-editor">${t('editor')}</label><textarea class="editor" id="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
-        <div class="output-head"><span>${t('output')}</span><span class="output-status" id="output-status">${t('ready')}</span></div>
+        <div class="output-head"><span>${t('output')}</span><span class="output-status" id="output-status" role="status" aria-live="polite" aria-atomic="true">${t('ready')}</span></div>
         <pre class="output empty" id="output">${t('runToOutput')}</pre>
       </section>
     </div>

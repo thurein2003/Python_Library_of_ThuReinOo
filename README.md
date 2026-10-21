@@ -21,9 +21,11 @@ Solutions stay hidden until **Show solution** is selected.
 
 Choose English, Myanmar, or Thai, and switch between light and dark themes. Python runs in your browser with Pyodide; the first run needs an internet connection.
 
-Edit and successfully run all 17 projects before marking them complete to unlock a printable certificate. The certificate is self-reported from progress saved in this browser; it is not independently verified.
+Edit and successfully run all 20 projects before marking them complete to unlock a printable certificate. The certificate is self-reported from progress saved in this browser; it is not independently verified.
 
-The new lessons cover text files, JSON, CSV reports, debugging edge cases, and `unittest`.
+The lessons include text files, JSON and API-shaped data, CSV reports, command-line arguments, SQLite, debugging edge cases, and `unittest`.
+
+Follow the recommended sequence in [the learning path](docs/LEARNING_PATH.md). It groups the lessons into foundations, data work, files and API-shaped data, applications, and a testing capstone.
 
 Use **Transfer progress** in the project toolbar to export a JSON backup or import it on another browser. The backup includes the learner name, saved code, and progress, so keep it private.
 
@@ -47,4 +49,6 @@ Open http://localhost:8000.
 
 The interactive site is in `learning-site/`. The older standalone Python scripts are indexed in [docs/LEGACY_EXAMPLES.md](docs/LEGACY_EXAMPLES.md); they are examples, not an installable Python package. The root `requirements.txt` is intentionally empty of packages because the site has no pip dependencies. Install optional packages from the requirement file for the example you want to run.
 
-GitHub Pages is the primary deployment. The workflow checks site content before publishing. Vercel can be used as an optional alternative; see [learning-site/README.md](learning-site/README.md).
+GitHub Pages is the primary deployment. Pull requests run the site, lesson, Python, browser, and accessibility checks before a push to `main` can deploy. Vercel can be used as an optional alternative; see [learning-site/README.md](learning-site/README.md).
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for lesson, translation, and example guidelines. Original code and learning materials use the MIT License; third-party assets may have separate terms. See [LICENSE](LICENSE).

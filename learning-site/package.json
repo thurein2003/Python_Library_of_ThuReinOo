@@ -3,7 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check app.js && node --check i18n.js && node --check additional-copy.js && node --check lessons.js && node --check additional-lessons.js && node --check solutions.js && node --check progress.js && node --check python-worker.js",
-    "test": "node --test"
+    "check": "node --check app.js && node --check i18n.js && node --check additional-copy.js && node --check lessons.js && node --check learning-path.js && node --check additional-lessons.js && node --check solutions.js && node --check progress.js && node --check python-worker.js && node --check playwright.config.js",
+    "test": "node --test",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1"
   }
 }

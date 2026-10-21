@@ -100,5 +100,77 @@ class ExpenseTests(unittest.TestCase):
             make_expense("Lunch", 0)
 
 unittest.main(argv=[""], exit=False)`
+  },
+  {
+    id: 'api-response-analyzer', level: 'Medium', title: 'API response analyzer', duration: '45 min', topic: 'JSON and API data',
+    summary: 'Validate a sample JSON response and turn it into a clear report without relying on a live service.',
+    goals: ['Read a JSON response with json.loads().', 'Check required fields before using a record.', 'Separate parsing, validation, and display.'],
+    task: 'Add a second response record and report how many tasks are complete. Reject a record with a missing title.',
+    hint: 'Compare the record keys with a set of required fields before formatting the output.',
+    code: `import json
+
+response_text = '{"userId": 7, "id": 3, "title": "Review Python functions", "completed": false}'
+response = json.loads(response_text)
+required_fields = {"userId", "id", "title", "completed"}
+
+missing_fields = required_fields - response.keys()
+if missing_fields:
+    raise ValueError(f"Missing fields: {sorted(missing_fields)}")
+
+state = "complete" if response["completed"] else "still open"
+print(f"Task {response['id']}: {response['title']} ({state})")`
+  },
+  {
+    id: 'command-line-task-manager', level: 'Large', title: 'Command-line task manager', duration: '60 min', topic: 'Functions and command-line arguments',
+    summary: 'Build a small command-line interface that adds tasks and lists the current task plan.',
+    goals: ['Create commands with argparse.', 'Keep command behavior in a function.', 'Try command input without needing a terminal prompt.'],
+    task: 'Add a complete command that marks a task done, then print completed and open tasks separately.',
+    hint: 'Add a subparser for the new command and update the matching task inside run_command().',
+    code: `import argparse
+
+def build_parser():
+    parser = argparse.ArgumentParser(prog="tasks")
+    commands = parser.add_subparsers(dest="command", required=True)
+    add = commands.add_parser("add")
+    add.add_argument("title")
+    commands.add_parser("list")
+    return parser
+
+def run_command(tasks, args):
+    if args.command == "add":
+        title = args.title.strip()
+        if not title:
+            raise ValueError("Task title cannot be empty")
+        tasks.append({"title": title, "done": False})
+        print(f"Added: {title}")
+    elif args.command == "list":
+        for number, task in enumerate(tasks, start=1):
+            marker = "✓" if task["done"] else " "
+            print(f"{number}. [{marker}] {task['title']}")
+
+tasks = []
+parser = build_parser()
+for command_line in [["add", "Read chapter"], ["add", "Practice loops"], ["list"]]:
+    run_command(tasks, parser.parse_args(command_line))`
+  },
+  {
+    id: 'sqlite-reading-list', level: 'Large', title: 'SQLite reading list', duration: '65 min', topic: 'SQLite and persistence',
+    summary: 'Store books in an in-memory SQLite database and query the reading list with SQL.',
+    goals: ['Create a table with sqlite3.', 'Insert and update rows with parameters.', 'Use a query result to build a report.'],
+    task: 'Add a query for unread books and print the number of pages remaining in the list.',
+    hint: 'Use a WHERE clause for unread rows and SUM(pages) to total their pages.',
+    code: `import sqlite3
+
+with sqlite3.connect(":memory:") as connection:
+    connection.execute("CREATE TABLE books (title TEXT, pages INTEGER, finished INTEGER)")
+    connection.executemany(
+        "INSERT INTO books VALUES (?, ?, ?)",
+        [("Python Basics", 180, 0), ("Data with Python", 240, 1), ("SQL Notes", 120, 0)],
+    )
+    connection.execute("UPDATE books SET finished = 1 WHERE title = ?", ("Python Basics",))
+
+    for title, pages, finished in connection.execute("SELECT title, pages, finished FROM books ORDER BY title"):
+        state = "finished" if finished else "to read"
+        print(f"{title}: {pages} pages, {state}")`
   }
 ];

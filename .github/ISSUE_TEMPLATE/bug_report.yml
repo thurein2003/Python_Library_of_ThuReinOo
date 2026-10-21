@@ -1,0 +1,26 @@
+name: Bug report
+description: Report a problem with the learning site or a Python example.
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe what you expected and what you saw.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include the lesson name and the steps that lead to the problem.
+      placeholder: "1. Open … 2. Select … 3. Run …"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser or Python version
+      placeholder: "Chrome 130, or Python 3.13"
+    validations:
+      required: false

@@ -1,6 +1,7 @@
 import { additionalLessons } from './additional-lessons.js';
+import { orderedLessonIds } from './learning-path.js';
 
-export const lessons = [
+const sourceLessons = [
   {
     id: 'tip-calculator', level: 'Small', title: 'Tip calculator', duration: '15 min', topic: 'Numbers and input',
     summary: 'Turn a bill amount and tip percentage into a clear total for a table.',
@@ -99,3 +100,6 @@ export const lessons = [
   },
   ...additionalLessons
 ];
+
+const lessonOrder = new Map(orderedLessonIds.map((id, index) => [id, index]));
+export const lessons = sourceLessons.sort((first, second) => lessonOrder.get(first.id) - lessonOrder.get(second.id));

@@ -1,40 +1,67 @@
-name: Deploy learning site
+name: Validate and deploy learning site
 
 on:
   push:
     branches: [main]
     paths:
       - 'learning-site/**'
+      - 'scripts/**'
+      - 'docs/LEGACY_EXAMPLES.md'
       - '.github/workflows/pages.yml'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: github-pages
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: learning-site/package-lock.json
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Install site test dependencies
+        run: npm ci --prefix learning-site
       - name: Check site JavaScript
         run: npm run check --prefix learning-site
-      - name: Validate lessons, translations, and progress backups
+      - name: Validate lessons, translations, Python execution, and progress backups
         run: npm test --prefix learning-site
+      - name: Check Python source syntax without executing legacy examples
+        run: python3 scripts/check_python_examples.py
+      - name: Check generated legacy example index
+        run: python3 scripts/build_legacy_examples_index.py --check
+      - name: Install Chromium for browser checks
+        run: npx playwright install --with-deps chromium
+        working-directory: learning-site
+      - name: Test learner flows and accessibility in Chromium
+        run: npm run test:e2e
+        working-directory: learning-site
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: validate
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

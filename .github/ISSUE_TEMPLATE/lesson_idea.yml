@@ -1,0 +1,25 @@
+name: Lesson idea
+description: Suggest a Python topic or guided project.
+title: "[Lesson idea]: "
+body:
+  - type: textarea
+    id: learning-goal
+    attributes:
+      label: What should learners be able to do?
+      description: Describe the skill or project outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: prerequisites
+    attributes:
+      label: Useful prerequisites
+      description: Mention lessons or Python concepts learners should know first.
+    validations:
+      required: false
+  - type: textarea
+    id: example
+    attributes:
+      label: Example or expected result
+      description: Share a small example of the project or expected output.
+    validations:
+      required: false
