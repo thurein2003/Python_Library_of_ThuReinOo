@@ -1,3 +1,5 @@
+import { additionalCopy } from './additional-copy.js';
+
 export const languageNames = { en: 'English', my: 'မြန်မာ', th: 'ไทย' };
 
 export const copy = {
@@ -78,3 +80,9 @@ export const copy = {
     }
   }
 };
+
+for (const [language, extra] of Object.entries(additionalCopy)) {
+  const { lesson, ...strings } = extra;
+  Object.assign(copy[language], strings);
+  copy[language].lesson = { ...(copy[language].lesson || {}), ...lesson };
+}

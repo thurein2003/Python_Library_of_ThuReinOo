@@ -1,6 +1,7 @@
 import { lessons } from './lessons.js';
 import { solutions } from './solutions.js';
-import { copy } from './i18n.js?v=learner-profile-4';
+import { createProgressBackup, validateProgressBackup } from './progress.js';
+import { copy } from './i18n.js?v=progress-transfer-5';
 
 const STORAGE_KEY = 'python-project-library-progress-v1';
 const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
@@ -106,6 +107,8 @@ function applyPreferences() {
     '#local-python-label': 'runsLocally', '#breadcrumb-label': 'projectLibrary', '#clear-progress-title': 'clearTitle',
     '#clear-progress-description': 'clearDescription', '#cancel-clear': 'cancel', '#confirm-clear': 'clear',
     '#footer-made': 'footerMade', '#footer-safety': 'footerSafety', '#certificate-unlocked': 'certificateReady',
+    '#progress-menu-label': 'transferProgress', '#export-progress': 'exportProgress', '#import-progress-label': 'importProgress',
+    '#progress-export-note': 'progressExportNote',
     '#star-repository-label': 'starRepository',
     '#learner-dialog-title': 'learnerWelcomeTitle', '#learner-dialog-copy': 'learnerWelcomeCopy',
     '#learner-name-label': 'learnerNameLabel', '#learner-privacy-copy': 'learnerPrivacyCopy',
@@ -123,6 +126,9 @@ function applyPreferences() {
   const reset = document.querySelector('#reset-progress');
   reset.title = strings.clearProgress;
   reset.setAttribute('aria-label', strings.clearProgress);
+  const progressMenuButton = document.querySelector('#progress-menu-button');
+  progressMenuButton.title = strings.transferProgress;
+  progressMenuButton.setAttribute('aria-label', strings.transferProgress);
   document.querySelector('#learner-name-display').textContent = learnerName;
   document.querySelector('#change-learner').hidden = !learnerName;
   saveProgress();
@@ -433,6 +439,77 @@ document.querySelector('#change-learner').addEventListener('click', () => {
   learnerDialog.showModal();
   learnerNameInput.focus();
 });
+
+document.querySelector('#export-progress').addEventListener('click', () => {
+  const drafts = {};
+  for (const lesson of lessons) {
+    const draft = storage.getItem(`python-project-draft-${lesson.id}`);
+    if (draft !== null) drafts[lesson.id] = draft;
+  }
+  const backup = createProgressBackup({
+    learnerName,
+    completed,
+    verifiedRuns,
+    solutionClicks,
+    drafts,
+    activeId,
+    language,
+    theme
+  });
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `python-project-library-progress-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  document.querySelector('#progress-menu').open = false;
+});
+
+document.querySelector('#import-progress-file').addEventListener('change', async event => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  try {
+    if (file.size > 2 * 1024 * 1024) {
+      window.alert(t('importTooLarge'));
+      return;
+    }
+    const backup = validateProgressBackup(JSON.parse(await file.text()), lessons.map(lesson => lesson.id));
+    if (!window.confirm(t('importConfirm'))) return;
+
+    resetLearnerData();
+    learnerName = backup.learnerName;
+    completed = new Set(backup.completed);
+    verifiedRuns = new Set(backup.verifiedRuns);
+    solutionClicks = backup.solutionClicks;
+    activeId = backup.activeId;
+    language = backup.language;
+    theme = backup.theme;
+    storage.setItem(LEARNER_NAME_KEY, learnerName);
+    storage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
+    storage.setItem(VERIFIED_RUNS_KEY, JSON.stringify([...verifiedRuns]));
+    storage.setItem(SOLUTION_CLICKS_KEY, String(solutionClicks));
+    storage.setItem('python-project-library-active', activeId);
+    storage.setItem('python-project-library-language', language);
+    storage.setItem('python-project-library-theme', theme);
+    for (const [id, code] of Object.entries(backup.drafts)) {
+      storage.setItem(`python-project-draft-${id}`, code);
+    }
+    applyPreferences();
+    renderList();
+    renderLesson();
+    if (learnerDialog.open) learnerDialog.close();
+    window.alert(t('importComplete'));
+  } catch {
+    window.alert(t('importFailed'));
+  } finally {
+    event.target.value = '';
+    document.querySelector('#progress-menu').open = false;
+  }
+});
+
 document.querySelector('#cancel-learner').addEventListener('click', () => {
   if (learnerName) learnerDialog.close();
 });

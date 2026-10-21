@@ -1,0 +1,4 @@
+# There is no root-level Python application to install.
+# The browser learning site uses Pyodide and has no pip dependencies.
+# Install only the optional dependencies for the example you want to run;
+# see docs/LEGACY_EXAMPLES.md for the per-project requirements files.

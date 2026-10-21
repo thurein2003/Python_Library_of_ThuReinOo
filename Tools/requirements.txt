@@ -1,0 +1,6 @@
+colorama
+geopy
+ip2geotools
+pyfiglet
+python-nmap
+requests

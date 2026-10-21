@@ -1,3 +1,5 @@
+import { additionalLessons } from './additional-lessons.js';
+
 export const lessons = [
   {
     id: 'tip-calculator', level: 'Small', title: 'Tip calculator', duration: '15 min', topic: 'Numbers and input',
@@ -94,5 +96,6 @@ export const lessons = [
     task: 'Pick a project you care about: a habit tracker, recipe organizer, study planner, or another useful tool. Replace the sample functions with your own first vertical slice.',
     hint: 'Start with one user action, one data model, and one test. Add persistence and a user interface only after that works.',
     code: `def add_task(tasks, title):\n    """Add a non-empty task and return the updated task list."""\n    title = title.strip()\n    if not title:\n        raise ValueError("Task title cannot be empty")\n    tasks.append({"title": title, "done": False})\n    return tasks\n\ndef complete_task(tasks, index):\n    if index < 0 or index >= len(tasks):\n        raise IndexError("No task at that position")\n    tasks[index]["done"] = True\n    return tasks[index]\n\n# Milestone 1: create and complete an item.\ntasks = []\nadd_task(tasks, "Write project requirements")\ncomplete_task(tasks, 0)\n\nassert len(tasks) == 1\nassert tasks[0]["done"] is True\nprint("Milestone 1 passed:", tasks)`
-  }
+  },
+  ...additionalLessons
 ];

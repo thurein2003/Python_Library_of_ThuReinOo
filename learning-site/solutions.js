@@ -299,5 +299,94 @@ assert len(tasks) == 2
 assert tasks[0]["done"] is True
 assert len(pending_tasks(tasks)) == 1
 print("All tests passed")
-print("Pending:", pending_tasks(tasks))`
+print("Pending:", pending_tasks(tasks))`,
+  'file-journal': `from pathlib import Path
+
+journal = Path("study_log.txt")
+entries = ["Practice loops: 20 minutes", "Review functions: 30 minutes"]
+journal.write_text("\\n".join(entries) + "\\n", encoding="utf-8")
+
+with journal.open("a", encoding="utf-8") as file:
+    file.write("Build a small project: 45 minutes\\n")
+
+saved_text = journal.read_text(encoding="utf-8")
+print(saved_text, end="")
+print(f"Entries: {len(saved_text.splitlines())}")`,
+
+  'json-contact-book': `import json
+
+contacts = [
+    {"name": "Ari", "email": "ari@example.com"},
+    {"name": "Bo", "email": "bo@example.com"},
+    {"name": "Kim", "email": "kim@example.com"},
+]
+
+def find_contact(records, name):
+    return next((record for record in records if record["name"].lower() == name.lower()), None)
+
+json_text = json.dumps(contacts, indent=2)
+loaded_contacts = json.loads(json_text)
+print(json_text)
+print("Search result:", find_contact(loaded_contacts, "kim"))
+print("Missing result:", find_contact(loaded_contacts, "Lee"))`,
+
+  'csv-sales-report': `import csv
+from io import StringIO
+
+csv_text = "product,units,price\\nNotebook,3,2.50\\nPen,5,1.20\\nNotebook,2,2.50\\nPen,2,1.20\\n"
+sales = csv.DictReader(StringIO(csv_text))
+totals = {}
+
+for sale in sales:
+    product = sale["product"]
+    units = int(sale["units"])
+    revenue = units * float(sale["price"])
+    summary = totals.setdefault(product, {"units": 0, "revenue": 0.0})
+    summary["units"] += units
+    summary["revenue"] += revenue
+
+for product, summary in sorted(totals.items()):
+    print(f"{product}: {summary['units']} units, {summary['revenue']:.2f}")`,
+
+  'debug-empty-scores': `students = {
+    "Ari": [80, 90],
+    "Bo": [],
+    "Kim": [75, 85],
+}
+
+def average(scores):
+    if not scores:
+        return None
+    return sum(scores) / len(scores)
+
+for name, scores in students.items():
+    score = average(scores)
+    if score is None:
+        print(f"{name}: no scores yet; skipped")
+    else:
+        print(f"{name}: {score:.1f}")`,
+
+  'unit-test-expenses': `import unittest
+
+def make_expense(description, amount):
+    description = description.strip()
+    if not description:
+        raise ValueError("Description is required")
+    if amount <= 0:
+        raise ValueError("Amount must be positive")
+    return {"description": description, "amount": amount}
+
+class ExpenseTests(unittest.TestCase):
+    def test_valid_expense(self):
+        self.assertEqual(make_expense(" Lunch ", 8.5), {"description": "Lunch", "amount": 8.5})
+
+    def test_non_positive_amount_is_rejected(self):
+        with self.assertRaises(ValueError):
+            make_expense("Lunch", 0)
+
+    def test_empty_description_is_rejected(self):
+        with self.assertRaises(ValueError):
+            make_expense("   ", 5)
+
+unittest.main(argv=[""], exit=False)`
 };

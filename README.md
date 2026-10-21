@@ -2,7 +2,7 @@
 
 Learn Python by building projects, from small exercises to larger applications.
 
-**Live site:** https://thurein2003.github.io/Python_Library_of_ThuReinOo/
+**Live site (GitHub Pages):** https://thurein2003.github.io/Python_Library_of_ThuReinOo/
 
 [![GitHub stars](https://img.shields.io/github/stars/thurein2003/Python_Library_of_ThuReinOo?style=social)](https://github.com/thurein2003/Python_Library_of_ThuReinOo)
 
@@ -21,7 +21,11 @@ Solutions stay hidden until **Show solution** is selected.
 
 Choose English, Myanmar, or Thai, and switch between light and dark themes. Python runs in your browser with Pyodide; the first run needs an internet connection.
 
-Edit and successfully run all 12 projects before marking them complete to unlock a printable certificate. It reports solution-button clicks saved in this browser.
+Edit and successfully run all 17 projects before marking them complete to unlock a printable certificate. The certificate is self-reported from progress saved in this browser; it is not independently verified.
+
+The new lessons cover text files, JSON, CSV reports, debugging edge cases, and `unittest`.
+
+Use **Transfer progress** in the project toolbar to export a JSON backup or import it on another browser. The backup includes the learner name, saved code, and progress, so keep it private.
 
 ## Quick guides
 
@@ -41,4 +45,6 @@ python3 -m http.server 8000 --directory learning-site
 
 Open http://localhost:8000.
 
-The original study folders are kept. The learning site is in `learning-site/`.
+The interactive site is in `learning-site/`. The older standalone Python scripts are indexed in [docs/LEGACY_EXAMPLES.md](docs/LEGACY_EXAMPLES.md); they are examples, not an installable Python package. The root `requirements.txt` is intentionally empty of packages because the site has no pip dependencies. Install optional packages from the requirement file for the example you want to run.
+
+GitHub Pages is the primary deployment. The workflow checks site content before publishing. Vercel can be used as an optional alternative; see [learning-site/README.md](learning-site/README.md).
