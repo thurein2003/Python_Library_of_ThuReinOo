@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f7f3">
-  <meta name="description" content="Learn Python by building guided projects, from first programs to larger applications.">
-  <title>Python Project Library | Thu Rein Oo</title>
-  <link rel="stylesheet" href="styles.css?v=learning-path-6">
-  <script type="module" src="app.js?v=learning-path-6"></script>
+  <meta name="description" content="Learn Python from beginner lessons to hands-on projects and a completion certificate.">
+  <title>Python Learning Academy | Thu Rein Oo</title>
+  <link rel="stylesheet" href="styles.css?v=academy-1">
+  <script type="module" src="app.js?v=academy-1"></script>
 </head>
 <body>
   <a class="skip-link" id="skip-to-lesson" href="#lesson-content">Skip to lesson</a>
   <header class="topbar">
     <a class="brand" href="./">
       <img class="brand-mark" src="echtit-logo.jpg" alt="Echtit logo" width="52" height="52">
-      <span><strong id="brand-title">Python Project Library</strong><small id="brand-tagline">Learn by building</small></span>
+      <span><strong id="brand-title">Python Learning Academy</strong><small id="brand-tagline">Learn Python step by step</small></span>
     </a>
     <div class="topbar-meta">
       <div class="preferences">
@@ -38,19 +38,24 @@
   </header>
 
   <main class="layout">
-    <aside class="library-panel" aria-label="Project library">
+    <aside class="library-panel" aria-label="Python Academy">
       <div class="panel-heading">
         <div>
-          <p class="eyebrow" id="workshop-label">YOUR WORKSHOP</p>
-          <h1 id="project-paths-title">Project paths</h1>
+          <p class="eyebrow" id="workshop-label">PYTHON ACADEMY</p>
+          <h1 id="project-paths-title">Learning tracks</h1>
         </div>
         <label class="sr-only" for="level-filter" id="filter-label">Filter by project size</label>
         <select id="level-filter" aria-labelledby="filter-label">
           <option value="all" id="all-levels-option">All levels</option>
+          <option value="Beginner" id="beginner-level-option" hidden>Beginner only</option>
           <option value="Small" id="small-level-option">Small</option>
           <option value="Medium" id="medium-level-option">Medium</option>
           <option value="Large" id="large-level-option">Large</option>
         </select>
+      </div>
+      <div class="academy-track-picker" role="group" aria-label="Learning tracks">
+        <button type="button" id="beginner-track-button" aria-pressed="false">Beginner Python</button>
+        <button type="button" id="project-track-button" aria-pressed="true">Project2Certificate</button>
       </div>
       <label class="search-box">
         <span aria-hidden="true">⌕</span>

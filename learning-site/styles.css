@@ -83,6 +83,11 @@ a { color: inherit; }
 .eyebrow { margin: 0 0 7px; color: var(--forest); font: 500 10px 'DM Mono', monospace; }
 .panel-heading h1 { margin: 0; font-size: 19px; }
 .panel-heading select { max-width: 106px; padding: 7px 26px 7px 9px; border: 1px solid var(--line); border-radius: 5px; background: var(--control-bg); color: var(--ink); font-size: 11px; }
+.academy-track-picker { display: grid; gap: 6px; margin: 0 2px 13px; }
+.academy-track-picker button { min-height: 39px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--control-bg); color: var(--soft-ink); font-size: 11px; font-weight: 700; text-align: left; cursor: pointer; }
+.academy-track-picker button:hover { border-color: var(--forest); }
+.academy-track-picker button[aria-pressed="true"] { border-color: var(--selected-line); background: var(--selected-bg); color: var(--forest-dark); box-shadow: inset 3px 0 var(--forest); }
+:root[data-theme="dark"] .academy-track-picker button[aria-pressed="true"] { color: var(--forest-dark); }
 .search-box { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--control-bg); color: var(--muted); }
 .search-box:focus-within { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
 .search-box > span:first-child { font-size: 21px; line-height: 1; }
@@ -121,6 +126,7 @@ a { color: inherit; }
 .lesson-badges { display: flex; flex-wrap: wrap; justify-content: end; gap: 6px; flex: 0 0 auto; }
 .badge { padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--control-bg); color: var(--muted); font: 10px 'DM Mono', monospace; white-space: nowrap; }
 .badge.level-small { border-color: #d6e8ac; background: #f4f9e9; color: #536c29; }
+.badge.level-beginner { border-color: #d6e8ac; background: #f4f9e9; color: #536c29; }
 .badge.level-medium { border-color: #bde0d0; background: #eaf6ef; color: #27674c; }
 .badge.level-large { border-color: #f0ccba; background: #fff1e9; color: #9a512e; }
 .learning-grid { display: grid; grid-template-columns: minmax(250px, .72fr) minmax(400px, 1.28fr); gap: 18px; max-width: 1080px; margin: 0 auto; }
@@ -204,6 +210,7 @@ a { color: inherit; }
 .certificate-actions .button:disabled { cursor: not-allowed; }
 
 :root[data-theme="dark"] .badge.level-small { border-color: #596a3a; background: #303a26; color: #d4e9a0; }
+:root[data-theme="dark"] .badge.level-beginner { border-color: #596a3a; background: #303a26; color: #d4e9a0; }
 :root[data-theme="dark"] .badge.level-medium { border-color: #3d6653; background: #20372c; color: #a9e3c0; }
 :root[data-theme="dark"] .badge.level-large { border-color: #79513c; background: #3b2b22; color: #ffc09b; }
 :root[data-theme="dark"] .button.primary { border-color: #287b59; background: #287b59; color: #f5fff8; }

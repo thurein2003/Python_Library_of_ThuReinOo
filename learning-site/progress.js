@@ -4,6 +4,7 @@ export function createProgressBackup(progress) {
   return {
     schemaVersion: 1,
     exportedAt: new Date().toISOString(),
+    ...(progress.trackId ? { trackId: progress.trackId } : {}),
     learnerName: progress.learnerName,
     completed: [...progress.completed],
     verifiedRuns: [...progress.verifiedRuns],
@@ -15,9 +16,15 @@ export function createProgressBackup(progress) {
   };
 }
 
-export function validateProgressBackup(value, lessonIds) {
+export function validateProgressBackup(value, lessonIds, expectedTrackId = 'project2certificate') {
   if (!value || typeof value !== 'object' || Array.isArray(value) || value.schemaVersion !== 1) {
     throw new Error('Unsupported progress file.');
+  }
+  if (value.trackId !== undefined && value.trackId !== expectedTrackId) {
+    throw new Error('This backup belongs to a different learning track.');
+  }
+  if (value.trackId === undefined && expectedTrackId !== 'project2certificate') {
+    throw new Error('This older backup belongs to the Project2Certificate track.');
   }
   const learnerName = typeof value.learnerName === 'string' ? value.learnerName.trim() : '';
   if (!learnerName || learnerName.length > 80) throw new Error('The learner name is invalid.');

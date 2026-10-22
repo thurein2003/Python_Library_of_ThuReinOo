@@ -1,14 +1,34 @@
 import { lessons } from './lessons.js';
 import { solutions } from './solutions.js';
 import { learningPaths } from './learning-path.js';
+import { beginnerLessons } from './beginner-lessons.js';
+import { beginnerSolutions } from './beginner-solutions.js';
+import { beginnerLearningPaths } from './beginner-learning-path.js';
 import { createProgressBackup, validateProgressBackup } from './progress.js';
-import { copy } from './i18n.js?v=learning-path-6';
+import { copy } from './i18n.js?v=academy-1';
 
 const STORAGE_KEY = 'python-project-library-progress-v1';
 const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
 const CERTIFICATE_NAME_KEY = 'python-project-library-certificate-name-v1';
 const VERIFIED_RUNS_KEY = 'python-project-library-verified-runs-v1';
 const LEARNER_NAME_KEY = 'python-project-library-learner-name-v1';
+const ACTIVE_TRACK_KEY = 'python-learning-academy-active-track-v1';
+const tracks = {
+  beginner: {
+    id: 'beginner', titleKey: 'trackBeginner', lessonLabel: 'lessonLabel', lessons: beginnerLessons,
+    solutions: beginnerSolutions, paths: beginnerLearningPaths, certificate: false,
+    keys: {
+      completed: 'python-beginner-progress-v1', verifiedRuns: 'python-beginner-verified-runs-v1',
+      solutionClicks: 'python-beginner-solution-clicks-v1', active: 'python-beginner-active-v1'
+    }
+  },
+  project2certificate: {
+    id: 'project2certificate', titleKey: 'trackProjectCertificate', lessonLabel: 'project',
+    lessons, solutions, paths: learningPaths, certificate: true,
+    keys: { completed: STORAGE_KEY, verifiedRuns: VERIFIED_RUNS_KEY, solutionClicks: SOLUTION_CLICKS_KEY, active: 'python-project-library-active' }
+  }
+};
+const trackIds = Object.keys(tracks);
 const sessionFallback = new Map();
 let sessionOnly = false;
 const storage = {
@@ -56,26 +76,51 @@ const learnerNameInput = document.querySelector('#learner-name-input');
 let learnerName = storage.getItem(LEARNER_NAME_KEY) || '';
 if (!learnerName) {
   for (const key of storage.keys()) {
-    if (key.startsWith('python-project-draft-')) storage.removeItem(key);
+    if (key.startsWith('python-project-draft-') || key.startsWith('python-beginner-draft-')) storage.removeItem(key);
   }
   storage.removeItem(STORAGE_KEY);
   storage.removeItem(VERIFIED_RUNS_KEY);
   storage.removeItem(SOLUTION_CLICKS_KEY);
+  storage.removeItem('python-beginner-progress-v1');
+  storage.removeItem('python-beginner-verified-runs-v1');
+  storage.removeItem('python-beginner-solution-clicks-v1');
   storage.removeItem(CERTIFICATE_NAME_KEY);
   storage.removeItem('python-project-library-active');
+  storage.removeItem('python-beginner-active-v1');
+  storage.removeItem(ACTIVE_TRACK_KEY);
 }
-let activeId = storage.getItem('python-project-library-active') || lessons[0].id;
+let activeTrackId = trackIds.includes(storage.getItem(ACTIVE_TRACK_KEY)) ? storage.getItem(ACTIVE_TRACK_KEY) : 'project2certificate';
+let activeId = storage.getItem(tracks[activeTrackId].keys.active) || tracks[activeTrackId].lessons[0].id;
+filter.value = activeTrackId === 'beginner' ? 'Beginner' : 'all';
 let language = storage.getItem('python-project-library-language') || 'en';
 if (!copy[language]) language = 'en';
 let theme = storage.getItem('python-project-library-theme') || 'light';
 if (!['light', 'dark'].includes(theme)) theme = 'light';
 let completed = loadProgress();
 let verifiedRuns = loadVerifiedRuns();
-let solutionClicks = Math.max(0, Number.parseInt(storage.getItem(SOLUTION_CLICKS_KEY) || '0', 10) || 0);
+let solutionClicks = Math.max(0, Number.parseInt(storage.getItem(tracks[activeTrackId].keys.solutionClicks) || '0', 10) || 0);
 let worker;
 let runTimer;
 let currentOutput;
 let activeRun;
+
+function currentTrack() {
+  return tracks[activeTrackId];
+}
+
+function currentLessons() {
+  return currentTrack().lessons;
+}
+
+function currentKeys() {
+  return currentTrack().keys;
+}
+
+function draftKey(lessonId) {
+  return activeTrackId === 'beginner'
+    ? `python-beginner-draft-${lessonId}`
+    : `python-project-draft-${lessonId}`;
+}
 
 function t(key, values = {}) {
   return copy[language][key].replace(/\{(\w+)\}/g, (_, name) => values[name] ?? '');
@@ -105,7 +150,7 @@ function applyPreferences() {
     '#skip-to-lesson': 'skipToLesson',
     '#brand-title': 'title', '#brand-tagline': 'tagline', '#browser-note': 'browserNote',
     '#workshop-label': 'workshop', '#project-paths-title': 'projectPaths', '#filter-label': 'filter', '#all-levels-option': 'allLevels',
-    '#small-level-option': 'small', '#medium-level-option': 'medium', '#large-level-option': 'large', '#search-label': 'search',
+    '#beginner-level-option': 'beginnerOnly', '#small-level-option': 'small', '#medium-level-option': 'medium', '#large-level-option': 'large', '#search-label': 'search',
     '#local-python-label': 'runsLocally', '#breadcrumb-label': 'projectLibrary', '#clear-progress-title': 'clearTitle',
     '#clear-progress-description': 'clearDescription', '#cancel-clear': 'cancel', '#confirm-clear': 'clear',
     '#footer-made': 'footerMade', '#footer-safety': 'footerSafety', '#certificate-unlocked': 'certificateReady',
@@ -122,9 +167,20 @@ function applyPreferences() {
     '#close-certificate': 'closeCertificate', '#print-certificate': 'printCertificate'
   };
   for (const [selector, key] of Object.entries(labels)) document.querySelector(selector).textContent = strings[key];
-  search.placeholder = strings.findProject;
-  document.querySelector('#lesson-list').setAttribute('aria-label', strings.projectList);
-  document.querySelector('#level-filter').setAttribute('aria-label', strings.filter);
+  document.querySelector('#beginner-track-button').textContent = strings.trackBeginner;
+  document.querySelector('#project-track-button').textContent = strings.trackProjectCertificate;
+  document.querySelector('#beginner-track-button').setAttribute('aria-pressed', String(activeTrackId === 'beginner'));
+  document.querySelector('#project-track-button').setAttribute('aria-pressed', String(activeTrackId === 'project2certificate'));
+  document.querySelector('.academy-track-picker').setAttribute('aria-label', strings.projectPaths);
+  document.querySelector('.library-panel').setAttribute('aria-label', strings.title);
+  document.querySelector('#breadcrumb-label').textContent = strings[currentTrack().titleKey];
+  document.querySelector('#filter-label').textContent = activeTrackId === 'beginner' ? strings.filterByLevel : strings.filter;
+  document.querySelector('#beginner-level-option').hidden = activeTrackId !== 'beginner';
+  document.querySelector('#clear-progress-description').textContent = activeTrackId === 'beginner' ? strings.clearBeginnerDescription : strings.clearDescription;
+  search.placeholder = activeTrackId === 'beginner' ? strings.findLesson : strings.findProject;
+  document.querySelector('#search-label').textContent = search.placeholder;
+  document.querySelector('#lesson-list').setAttribute('aria-label', activeTrackId === 'beginner' ? strings.beginnerList : strings.projectList);
+  document.querySelector('#level-filter').setAttribute('aria-label', activeTrackId === 'beginner' ? strings.filterByLevel : strings.filter);
   const reset = document.querySelector('#reset-progress');
   reset.title = strings.clearProgress;
   reset.setAttribute('aria-label', strings.clearProgress);
@@ -140,8 +196,8 @@ function applyPreferences() {
 
 function loadProgress() {
   try {
-    const saved = JSON.parse(storage.getItem(STORAGE_KEY) || '[]');
-    return new Set(Array.isArray(saved) ? saved.filter(id => lessons.some(lesson => lesson.id === id)) : []);
+    const saved = JSON.parse(storage.getItem(currentKeys().completed) || '[]');
+    return new Set(Array.isArray(saved) ? saved.filter(id => currentLessons().some(lesson => lesson.id === id)) : []);
   } catch {
     return new Set();
   }
@@ -149,37 +205,43 @@ function loadProgress() {
 
 function loadVerifiedRuns() {
   try {
-    const saved = JSON.parse(storage.getItem(VERIFIED_RUNS_KEY) || '[]');
-    return new Set(Array.isArray(saved) ? saved.filter(id => lessons.some(lesson => lesson.id === id)) : []);
+    const saved = JSON.parse(storage.getItem(currentKeys().verifiedRuns) || '[]');
+    return new Set(Array.isArray(saved) ? saved.filter(id => currentLessons().some(lesson => lesson.id === id)) : []);
   } catch {
     return new Set();
   }
 }
 
 function saveProgress() {
-  storage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
-  progressCount.textContent = t('progress', { done: completed.size, total: lessons.length });
+  storage.setItem(currentKeys().completed, JSON.stringify([...completed]));
+  progressCount.textContent = t('progress', { done: completed.size, total: currentLessons().length });
   updateCertificateAccess();
 }
 
 function saveVerifiedRuns() {
-  storage.setItem(VERIFIED_RUNS_KEY, JSON.stringify([...verifiedRuns]));
+  storage.setItem(currentKeys().verifiedRuns, JSON.stringify([...verifiedRuns]));
   updateCertificateAccess();
   renderCertificate();
 }
 
 function updateCertificateAccess() {
-  const allCompleted = completed.size === lessons.length;
-  const allVerified = verifiedRuns.size === lessons.length;
-  document.querySelector('#certificate-access').hidden = !allCompleted;
+  const certificateAccess = document.querySelector('#certificate-access');
+  if (!currentTrack().certificate) {
+    certificateAccess.hidden = true;
+    return;
+  }
+  const allCompleted = completed.size === currentLessons().length;
+  const allVerified = verifiedRuns.size === currentLessons().length;
+  certificateAccess.hidden = !allCompleted;
   document.querySelector('#certificate-unlocked').textContent = allVerified ? t('certificateReady') : t('certificateVerificationPending');
   document.querySelector('#certificate-button').disabled = !allVerified;
   document.querySelector('#star-repository-link').hidden = !allVerified;
 }
 
 function renderCertificate() {
+  if (!currentTrack().certificate) return;
   document.querySelector('#certificate-recipient').textContent = learnerName || t('certificateRecipientPlaceholder');
-  document.querySelector('#certificate-completed-copy').textContent = t('certificateCompleted', { total: lessons.length });
+  document.querySelector('#certificate-completed-copy').textContent = t('certificateCompleted', { total: currentLessons().length });
   document.querySelector('#certificate-project-count').textContent = String(completed.size);
   document.querySelector('#certificate-verified-count').textContent = String(verifiedRuns.size);
   document.querySelector('#certificate-solution-count').textContent = String(solutionClicks);
@@ -202,13 +264,14 @@ function syncCompletionControl(sourceLesson, editor) {
   button.textContent = completed.has(sourceLesson.id)
     ? (verified ? t('completed') : t('verifyFirst'))
     : (verified ? t('markComplete') : t('verifyFirst'));
-  document.querySelector('#completion-requirement').textContent = verified ? t('readyToComplete') : t('editRunToComplete');
+  const message = currentTrack().certificate ? (verified ? 'readyToComplete' : 'editRunToComplete') : (verified ? 'readyToCompleteLesson' : 'editRunToCompleteLesson');
+  document.querySelector('#completion-requirement').textContent = t(message);
 }
 
 function visibleLessons() {
   const level = filter.value;
   const query = search.value.trim().toLowerCase();
-  return lessons.filter(lesson => {
+  return currentLessons().filter(lesson => {
     const text = localizedLesson(lesson);
     return (level === 'all' || lesson.level === level)
       && `${text.title} ${text.topic} ${text.summary}`.toLowerCase().includes(query);
@@ -218,7 +281,7 @@ function visibleLessons() {
 function renderList() {
   lessonList.replaceChildren();
   const visible = visibleLessons();
-  for (const path of learningPaths) {
+  for (const path of currentTrack().paths) {
     const groupLessons = path.lessonIds.map(id => visible.find(lesson => lesson.id === id)).filter(Boolean);
     if (!groupLessons.length) continue;
     const group = document.createElement('div');
@@ -232,7 +295,7 @@ function renderList() {
       button.type = 'button';
       button.className = 'lesson-item';
       button.setAttribute('aria-current', lesson.id === activeId ? 'page' : 'false');
-      button.innerHTML = `<span class="lesson-number">${String(lessons.indexOf(lesson) + 1).padStart(2, '0')}</span><span class="lesson-name"></span><span class="lesson-check">${completed.has(lesson.id) ? '✓' : ''}</span>`;
+      button.innerHTML = `<span class="lesson-number">${String(currentLessons().indexOf(lesson) + 1).padStart(2, '0')}</span><span class="lesson-name"></span><span class="lesson-check">${completed.has(lesson.id) ? '✓' : ''}</span>`;
       button.querySelector('.lesson-name').textContent = localizedLesson(lesson).title;
       button.addEventListener('click', () => selectLesson(lesson.id));
       group.append(button);
@@ -242,22 +305,23 @@ function renderList() {
   if (!visible.length) {
     const empty = document.createElement('p');
     empty.className = 'empty-state';
-    empty.textContent = t('noMatches');
+    empty.textContent = t(activeTrackId === 'beginner' ? 'noBeginnerMatches' : 'noMatches');
     lessonList.append(empty);
   }
 }
 
 function renderLesson() {
-  const sourceLesson = lessons.find(item => item.id === activeId) || lessons[0];
+  const lessonsForTrack = currentLessons();
+  const sourceLesson = lessonsForTrack.find(item => item.id === activeId) || lessonsForTrack[0];
   const lesson = localizedLesson(sourceLesson);
   activeId = lesson.id;
-  storage.setItem('python-project-library-active', activeId);
+  storage.setItem(currentKeys().active, activeId);
   document.querySelector('#crumb-title').textContent = lesson.title;
   const goals = lesson.goals.map(goal => `<li>${escapeHtml(goal)}</li>`).join('');
   lessonContent.innerHTML = `
     <header class="lesson-header">
       <div><h2>${escapeHtml(lesson.title)}</h2><p>${escapeHtml(lesson.summary)}</p></div>
-      <div class="lesson-badges"><span class="badge level-${lesson.level.toLowerCase()}">${t(lesson.level.toLowerCase())} ${t('project')}</span><span class="badge">${lesson.duration}</span><span class="badge">${escapeHtml(lesson.topic)}</span></div>
+      <div class="lesson-badges"><span class="badge level-${lesson.level.toLowerCase()}">${t(lesson.level.toLowerCase())} ${t(currentTrack().lessonLabel)}</span><span class="badge">${lesson.duration}</span><span class="badge">${escapeHtml(lesson.topic)}</span></div>
     </header>
     <div class="learning-grid">
       <div class="brief-panel">
@@ -276,28 +340,28 @@ function renderLesson() {
       <summary>${t('showSolution')}</summary>
       <pre class="solution-code"></pre>
     </details>
-    <div class="lesson-navigation"><button type="button" class="button" id="previous-project">${t('previous')}</button><span class="lesson-position">${lessons.indexOf(sourceLesson) + 1} ${t('of')} ${lessons.length}</span><button type="button" class="button primary" id="next-project"></button></div>
+    <div class="lesson-navigation"><button type="button" class="button" id="previous-project">${t('previous')}</button><span class="lesson-position">${lessonsForTrack.indexOf(sourceLesson) + 1} ${t('of')} ${lessonsForTrack.length}</span><button type="button" class="button primary" id="next-project"></button></div>
     <p class="completion-requirement" id="completion-requirement" aria-live="polite"></p>`;
 
-  document.querySelector('.solution-code').textContent = solutions[lesson.id];
+  document.querySelector('.solution-code').textContent = currentTrack().solutions[lesson.id];
   const solutionPanel = document.querySelector('.solution-panel');
   solutionPanel.querySelector('summary').addEventListener('click', () => {
     solutionClicks += 1;
-    storage.setItem(SOLUTION_CLICKS_KEY, String(solutionClicks));
+    storage.setItem(currentKeys().solutionClicks, String(solutionClicks));
     renderCertificate();
   });
   solutionPanel.addEventListener('toggle', () => {
     solutionPanel.querySelector('summary').textContent = t(solutionPanel.open ? 'hideSolution' : 'showSolution');
   });
   const editor = document.querySelector('#code-editor');
-  const savedDraft = storage.getItem(`python-project-draft-${lesson.id}`);
+  const savedDraft = storage.getItem(draftKey(lesson.id));
   editor.value = savedDraft ?? lesson.code;
   syncCompletionControl(sourceLesson, editor);
   currentOutput = document.querySelector('#output');
   const runButton = document.querySelector('#run-code');
 
   editor.addEventListener('input', () => {
-    storage.setItem(`python-project-draft-${lesson.id}`, editor.value);
+    storage.setItem(draftKey(lesson.id), editor.value);
     if (verifiedRuns.delete(sourceLesson.id)) saveVerifiedRuns();
     syncCompletionControl(sourceLesson, editor);
   });
@@ -318,15 +382,15 @@ function renderLesson() {
     showOutput(t('ready'), t('runToOutput'), false);
   });
   runButton.addEventListener('click', () => runCode(editor.value, runButton));
-  document.querySelector('#previous-project').disabled = lessons.indexOf(sourceLesson) === 0;
+  document.querySelector('#previous-project').disabled = lessonsForTrack.indexOf(sourceLesson) === 0;
   document.querySelector('#previous-project').addEventListener('click', () => navigate(-1));
   document.querySelector('#next-project').addEventListener('click', () => {
     if (!verifiedRuns.has(sourceLesson.id) || !hasChangedStarter(sourceLesson, editor)) return;
     completed.add(lesson.id);
     saveProgress();
     renderList();
-    if (lessons.indexOf(sourceLesson) < lessons.length - 1) navigate(1);
-    else document.querySelector('#next-project').textContent = t('allComplete');
+    if (lessonsForTrack.indexOf(sourceLesson) < lessonsForTrack.length - 1) navigate(1);
+    else document.querySelector('#next-project').textContent = t(currentTrack().certificate ? 'allComplete' : 'allLessonsComplete');
   });
   renderList();
 }
@@ -340,9 +404,29 @@ function selectLesson(id) {
   renderLesson();
 }
 
+function selectTrack(id) {
+  if (!tracks[id] || id === activeTrackId) return;
+  if (worker) worker.terminate();
+  worker = null;
+  activeRun = null;
+  clearTimeout(runTimer);
+  activeTrackId = id;
+  storage.setItem(ACTIVE_TRACK_KEY, activeTrackId);
+  completed = loadProgress();
+  verifiedRuns = loadVerifiedRuns();
+  solutionClicks = Math.max(0, Number.parseInt(storage.getItem(currentKeys().solutionClicks) || '0', 10) || 0);
+  activeId = storage.getItem(currentKeys().active) || currentLessons()[0].id;
+  filter.value = activeTrackId === 'beginner' ? 'Beginner' : 'all';
+  search.value = '';
+  applyPreferences();
+  renderList();
+  renderLesson();
+}
+
 function navigate(offset) {
-  const index = lessons.findIndex(lesson => lesson.id === activeId);
-  const next = lessons[Math.max(0, Math.min(lessons.length - 1, index + offset))];
+  const lessonsForTrack = currentLessons();
+  const index = lessonsForTrack.findIndex(lesson => lesson.id === activeId);
+  const next = lessonsForTrack[Math.max(0, Math.min(lessonsForTrack.length - 1, index + offset))];
   selectLesson(next.id);
 }
 
@@ -363,11 +447,11 @@ function createWorker() {
       return;
     }
     clearTimeout(runTimer);
-    if (type === 'done' && activeRun?.lessonId === activeId && activeRun.changed
+    if (type === 'done' && activeRun?.trackId === activeTrackId && activeRun.lessonId === activeId && activeRun.changed
       && document.querySelector('#code-editor')?.value === activeRun.code) {
       verifiedRuns.add(activeRun.lessonId);
       saveVerifiedRuns();
-      const sourceLesson = lessons.find(lesson => lesson.id === activeRun.lessonId);
+      const sourceLesson = currentLessons().find(lesson => lesson.id === activeRun.lessonId);
       syncCompletionControl(sourceLesson, document.querySelector('#code-editor'));
     }
     activeRun = null;
@@ -386,8 +470,8 @@ function createWorker() {
 
 function runCode(code, button) {
   if (!worker) createWorker();
-  const sourceLesson = lessons.find(lesson => lesson.id === activeId);
-  activeRun = { lessonId: activeId, code, changed: code.trim().length > 0 && code.trim() !== sourceLesson.code.trim() };
+  const sourceLesson = currentLessons().find(lesson => lesson.id === activeId);
+  activeRun = { trackId: activeTrackId, lessonId: activeId, code, changed: code.trim().length > 0 && code.trim() !== sourceLesson.code.trim() };
   button.disabled = true;
   showOutput(t('startingPython'), t('loadingPython'), false);
   worker.postMessage({ type: 'run', code });
@@ -416,6 +500,8 @@ function escapeHtml(value) {
 
 filter.addEventListener('change', renderList);
 search.addEventListener('input', renderList);
+document.querySelector('#beginner-track-button').addEventListener('click', () => selectTrack('beginner'));
+document.querySelector('#project-track-button').addEventListener('click', () => selectTrack('project2certificate'));
 languageSelect.addEventListener('change', () => {
   language = languageSelect.value;
   storage.setItem('python-project-library-language', language);
@@ -444,11 +530,12 @@ document.querySelector('#change-learner').addEventListener('click', () => {
 
 document.querySelector('#export-progress').addEventListener('click', () => {
   const drafts = {};
-  for (const lesson of lessons) {
-    const draft = storage.getItem(`python-project-draft-${lesson.id}`);
+  for (const lesson of currentLessons()) {
+    const draft = storage.getItem(draftKey(lesson.id));
     if (draft !== null) drafts[lesson.id] = draft;
   }
   const backup = createProgressBackup({
+    trackId: activeTrackId,
     learnerName,
     completed,
     verifiedRuns,
@@ -462,7 +549,7 @@ document.querySelector('#export-progress').addEventListener('click', () => {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `python-project-library-progress-${new Date().toISOString().slice(0, 10)}.json`;
+  link.download = `python-learning-${activeTrackId}-progress-${new Date().toISOString().slice(0, 10)}.json`;
   document.body.append(link);
   link.click();
   link.remove();
@@ -478,10 +565,11 @@ document.querySelector('#import-progress-file').addEventListener('change', async
       window.alert(t('importTooLarge'));
       return;
     }
-    const backup = validateProgressBackup(JSON.parse(await file.text()), lessons.map(lesson => lesson.id));
+    const backup = validateProgressBackup(JSON.parse(await file.text()), currentLessons().map(lesson => lesson.id), activeTrackId);
     if (!window.confirm(t('importConfirm'))) return;
 
-    resetLearnerData();
+    if (backup.learnerName !== learnerName) resetLearnerData();
+    for (const lesson of currentLessons()) storage.removeItem(draftKey(lesson.id));
     learnerName = backup.learnerName;
     completed = new Set(backup.completed);
     verifiedRuns = new Set(backup.verifiedRuns);
@@ -490,14 +578,15 @@ document.querySelector('#import-progress-file').addEventListener('change', async
     language = backup.language;
     theme = backup.theme;
     storage.setItem(LEARNER_NAME_KEY, learnerName);
-    storage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
-    storage.setItem(VERIFIED_RUNS_KEY, JSON.stringify([...verifiedRuns]));
-    storage.setItem(SOLUTION_CLICKS_KEY, String(solutionClicks));
-    storage.setItem('python-project-library-active', activeId);
+    storage.setItem(currentKeys().completed, JSON.stringify([...completed]));
+    storage.setItem(currentKeys().verifiedRuns, JSON.stringify([...verifiedRuns]));
+    storage.setItem(currentKeys().solutionClicks, String(solutionClicks));
+    storage.setItem(currentKeys().active, activeId);
+    storage.setItem(ACTIVE_TRACK_KEY, activeTrackId);
     storage.setItem('python-project-library-language', language);
     storage.setItem('python-project-library-theme', theme);
     for (const [id, code] of Object.entries(backup.drafts)) {
-      storage.setItem(`python-project-draft-${id}`, code);
+      storage.setItem(draftKey(id), code);
     }
     applyPreferences();
     renderList();
@@ -551,8 +640,8 @@ document.querySelector('#reset-progress').addEventListener('click', async () => 
 function clearProgress() {
   completed = new Set();
   verifiedRuns = new Set();
-  storage.removeItem(STORAGE_KEY);
-  storage.removeItem(VERIFIED_RUNS_KEY);
+  storage.removeItem(currentKeys().completed);
+  storage.removeItem(currentKeys().verifiedRuns);
   saveProgress();
   renderList();
   renderLesson();
@@ -560,17 +649,21 @@ function clearProgress() {
 
 function resetLearnerData() {
   for (const key of storage.keys()) {
-    if (key.startsWith('python-project-draft-')) storage.removeItem(key);
+    if (key.startsWith('python-project-draft-') || key.startsWith('python-beginner-draft-')) storage.removeItem(key);
   }
   storage.removeItem(STORAGE_KEY);
   storage.removeItem(VERIFIED_RUNS_KEY);
   storage.removeItem(SOLUTION_CLICKS_KEY);
+  storage.removeItem('python-beginner-progress-v1');
+  storage.removeItem('python-beginner-verified-runs-v1');
+  storage.removeItem('python-beginner-solution-clicks-v1');
   storage.removeItem(CERTIFICATE_NAME_KEY);
   storage.removeItem('python-project-library-active');
+  storage.removeItem('python-beginner-active-v1');
   completed = new Set();
   verifiedRuns = new Set();
   solutionClicks = 0;
-  activeId = lessons[0].id;
+  activeId = currentLessons()[0].id;
 }
 
 applyPreferences();

@@ -1,4 +1,5 @@
 import { additionalCopy } from './additional-copy.js';
+import { academyCopy } from './academy-copy.js';
 
 export const languageNames = { en: 'English', my: 'မြန်မာ', th: 'ไทย' };
 
@@ -84,8 +85,10 @@ export const copy = {
   }
 };
 
-for (const [language, extra] of Object.entries(additionalCopy)) {
-  const { lesson, ...strings } = extra;
-  Object.assign(copy[language], strings);
-  copy[language].lesson = { ...(copy[language].lesson || {}), ...lesson };
+for (const translations of [additionalCopy, academyCopy]) {
+  for (const [language, extra] of Object.entries(translations)) {
+    const { lesson, ...strings } = extra;
+    Object.assign(copy[language], strings);
+    copy[language].lesson = { ...(copy[language].lesson || {}), ...lesson };
+  }
 }

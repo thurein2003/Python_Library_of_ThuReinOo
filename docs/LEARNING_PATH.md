@@ -1,4 +1,4 @@
-# Recommended learning path
+# Project2Certificate learning path
 
 The site orders its 20 lessons by the concepts they build on. The size filter still lets learners choose shorter or larger projects within each stage.
 

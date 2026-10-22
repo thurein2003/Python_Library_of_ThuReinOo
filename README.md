@@ -1,6 +1,6 @@
-# Python Project Library
+# Python Learning Academy
 
-Learn Python by building projects, from small exercises to larger applications.
+Learn Python step by step with a beginner course and a hands-on project track.
 
 **Live site (GitHub Pages):** https://thurein2003.github.io/Python_Library_of_ThuReinOo/
 
@@ -10,9 +10,9 @@ After earning a certificate, learners can star the repository. This live total c
 
 ## Try it
 
-1. Choose a project and read its challenge.
-2. Edit the Python code and select **Run**.
-3. Save progress in this browser and move to the next project.
+1. Choose **Beginner Python** for Python fundamentals, or **Project2Certificate** for the guided project course.
+2. Read a lesson, edit the Python code, and select **Run**.
+3. Save progress in this browser and move to the next lesson.
 
 Enter a learner name before starting. Changing the name resets the saved learning history. Progress stays in this browser and is not included in the site link.
 If browser storage is blocked, the site uses temporary tab-only storage and warns you that progress will not persist.
@@ -21,11 +21,11 @@ Solutions stay hidden until **Show solution** is selected.
 
 Choose English, Myanmar, or Thai, and switch between light and dark themes. Python runs in your browser with Pyodide; the first run needs an internet connection.
 
-Edit and successfully run all 20 projects before marking them complete to unlock a printable certificate. The certificate is self-reported from progress saved in this browser; it is not independently verified.
+The **Beginner Python** track covers beginner-level concepts only. **Project2Certificate** contains the existing 20 guided projects; edit and successfully run each one before marking it complete to unlock a printable certificate. The certificate is self-reported from progress saved in this browser; it is not independently verified.
 
 The lessons include text files, JSON and API-shaped data, CSV reports, command-line arguments, SQLite, debugging edge cases, and `unittest`.
 
-Follow the recommended sequence in [the learning path](docs/LEARNING_PATH.md). It groups the lessons into foundations, data work, files and API-shaped data, applications, and a testing capstone.
+Follow the **Project2Certificate** sequence in [the learning path](docs/LEARNING_PATH.md). The beginner course sequence is in [Beginner Python](docs/BEGINNER_PYTHON.md).
 
 Use **Transfer progress** in the project toolbar to export a JSON backup or import it on another browser. The backup includes the learner name, saved code, and progress, so keep it private.
 
