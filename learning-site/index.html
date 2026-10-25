@@ -54,8 +54,20 @@
         </select>
       </div>
       <div class="academy-track-picker" role="group" aria-label="Learning tracks">
-        <button type="button" id="beginner-track-button" aria-pressed="false">Beginner Python</button>
-        <button type="button" id="project-track-button" aria-pressed="true">Project2Certificate</button>
+        <div class="track-choice">
+          <button type="button" id="beginner-track-button" aria-pressed="false">
+            <span id="beginner-track-label">Beginner Python</span>
+            <span class="track-progress-count" id="beginner-track-count">0 / 10 complete</span>
+          </button>
+          <progress class="track-progress" id="beginner-track-progress" max="10" value="0" aria-label="Beginner Python progress"></progress>
+        </div>
+        <div class="track-choice">
+          <button type="button" id="project-track-button" aria-pressed="true">
+            <span id="project-track-label">Project2Certificate</span>
+            <span class="track-progress-count" id="project-track-count">0 / 20 complete</span>
+          </button>
+          <progress class="track-progress" id="project-track-progress" max="20" value="0" aria-label="Project2Certificate progress"></progress>
+        </div>
       </div>
       <label class="search-box">
         <span aria-hidden="true">⌕</span>

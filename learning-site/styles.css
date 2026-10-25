@@ -83,8 +83,14 @@ a { color: inherit; }
 .eyebrow { margin: 0 0 7px; color: var(--forest); font: 500 10px 'DM Mono', monospace; }
 .panel-heading h1 { margin: 0; font-size: 19px; }
 .panel-heading select { max-width: 106px; padding: 7px 26px 7px 9px; border: 1px solid var(--line); border-radius: 5px; background: var(--control-bg); color: var(--ink); font-size: 11px; }
-.academy-track-picker { display: grid; gap: 6px; margin: 0 2px 13px; }
-.academy-track-picker button { min-height: 39px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--control-bg); color: var(--soft-ink); font-size: 11px; font-weight: 700; text-align: left; cursor: pointer; }
+.academy-track-picker { display: grid; gap: 9px; margin: 0 2px 13px; }
+.track-choice { display: grid; gap: 4px; }
+.academy-track-picker button { display: flex; align-items: center; justify-content: space-between; gap: 7px; min-height: 39px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--control-bg); color: var(--soft-ink); font-size: 11px; font-weight: 700; text-align: left; cursor: pointer; }
+.track-progress-count { color: var(--muted); font-size: 9px; font-weight: 500; white-space: nowrap; }
+.track-progress { display: block; width: calc(100% - 2px); height: 5px; margin: 0 1px; appearance: none; border: 0; border-radius: 99px; background: var(--line); }
+.track-progress::-webkit-progress-bar { border-radius: 99px; background: var(--line); }
+.track-progress::-webkit-progress-value { border-radius: 99px; background: var(--forest); }
+.track-progress::-moz-progress-bar { border-radius: 99px; background: var(--forest); }
 .academy-track-picker button:hover { border-color: var(--forest); }
 .academy-track-picker button[aria-pressed="true"] { border-color: var(--selected-line); background: var(--selected-bg); color: var(--forest-dark); box-shadow: inset 3px 0 var(--forest); }
 :root[data-theme="dark"] .academy-track-picker button[aria-pressed="true"] { color: var(--forest-dark); }

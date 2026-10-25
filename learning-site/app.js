@@ -167,8 +167,8 @@ function applyPreferences() {
     '#close-certificate': 'closeCertificate', '#print-certificate': 'printCertificate'
   };
   for (const [selector, key] of Object.entries(labels)) document.querySelector(selector).textContent = strings[key];
-  document.querySelector('#beginner-track-button').textContent = strings.trackBeginner;
-  document.querySelector('#project-track-button').textContent = strings.trackProjectCertificate;
+  document.querySelector('#beginner-track-label').textContent = strings.trackBeginner;
+  document.querySelector('#project-track-label').textContent = strings.trackProjectCertificate;
   document.querySelector('#beginner-track-button').setAttribute('aria-pressed', String(activeTrackId === 'beginner'));
   document.querySelector('#project-track-button').setAttribute('aria-pressed', String(activeTrackId === 'project2certificate'));
   document.querySelector('.academy-track-picker').setAttribute('aria-label', strings.projectPaths);
@@ -195,9 +195,14 @@ function applyPreferences() {
 }
 
 function loadProgress() {
+  return loadTrackProgress(currentTrack());
+}
+
+function loadTrackProgress(track) {
   try {
-    const saved = JSON.parse(storage.getItem(currentKeys().completed) || '[]');
-    return new Set(Array.isArray(saved) ? saved.filter(id => currentLessons().some(lesson => lesson.id === id)) : []);
+    const saved = JSON.parse(storage.getItem(track.keys.completed) || '[]');
+    const lessonIds = new Set(track.lessons.map(lesson => lesson.id));
+    return new Set(Array.isArray(saved) ? saved.filter(id => lessonIds.has(id)) : []);
   } catch {
     return new Set();
   }
@@ -215,7 +220,24 @@ function loadVerifiedRuns() {
 function saveProgress() {
   storage.setItem(currentKeys().completed, JSON.stringify([...completed]));
   progressCount.textContent = t('progress', { done: completed.size, total: currentLessons().length });
+  renderTrackProgress();
   updateCertificateAccess();
+}
+
+function renderTrackProgress() {
+  for (const [trackId, track] of Object.entries(tracks)) {
+    const trackCompleted = trackId === activeTrackId ? completed : loadTrackProgress(track);
+    const done = trackCompleted.size;
+    const total = track.lessons.length;
+    const label = t(track.titleKey);
+    const progressLabel = t('progress', { done, total });
+    const progress = document.querySelector(`#${trackId === 'beginner' ? 'beginner' : 'project'}-track-progress`);
+    const count = document.querySelector(`#${trackId === 'beginner' ? 'beginner' : 'project'}-track-count`);
+    progress.max = total;
+    progress.value = done;
+    progress.setAttribute('aria-label', `${label}: ${progressLabel}`);
+    count.textContent = progressLabel;
+  }
 }
 
 function saveVerifiedRuns() {
