@@ -477,13 +477,14 @@ function selectLesson(id) {
   scrollToLessonOnMobile();
 }
 
-function selectTrack(id) {
+function selectTrack(id, { fromHistory = false } = {}) {
   if (!tracks[id]) return;
   if (worker) worker.terminate();
   worker = null;
   activeRun = null;
   clearTimeout(runTimer);
   if (id !== activeTrackId) {
+    if (!fromHistory) history.pushState({ academyTrackId: id }, '', window.location.href);
     activeTrackId = id;
     storage.setItem(ACTIVE_TRACK_KEY, activeTrackId);
     completed = loadProgress();
@@ -616,6 +617,11 @@ document.addEventListener('keydown', event => {
 });
 document.querySelector('#beginner-track-button').addEventListener('click', () => selectTrack('beginner'));
 document.querySelector('#project-track-button').addEventListener('click', () => selectTrack('project2certificate'));
+history.replaceState({ academyTrackId: activeTrackId }, '', window.location.href);
+window.addEventListener('popstate', event => {
+  const trackId = event.state?.academyTrackId;
+  if (tracks[trackId]) selectTrack(trackId, { fromHistory: true });
+});
 languageSelect.addEventListener('change', () => {
   language = languageSelect.value;
   storage.setItem('python-project-library-language', language);
