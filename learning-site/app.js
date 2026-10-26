@@ -135,7 +135,7 @@ function applyPreferences() {
   const strings = copy[language];
   document.documentElement.lang = language;
   document.documentElement.dataset.theme = theme;
-  document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#121b17' : '#f4f7f3';
+  document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#0d1420' : '#f5f7fb';
   document.title = `${strings.title} | Thu Rein Oo`;
   languageSelect.value = language;
   document.querySelector('#language-label').textContent = strings.language;
