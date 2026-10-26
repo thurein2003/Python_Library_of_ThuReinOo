@@ -175,6 +175,8 @@ function applyPreferences() {
   document.querySelector('#mobile-lesson-menu-label').textContent = strings.lessonMenu;
   document.querySelector('#beginner-track-button').setAttribute('aria-pressed', String(activeTrackId === 'beginner'));
   document.querySelector('#project-track-button').setAttribute('aria-pressed', String(activeTrackId === 'project2certificate'));
+  document.querySelector('#beginner-track-button').closest('.track-choice').dataset.active = String(activeTrackId === 'beginner');
+  document.querySelector('#project-track-button').closest('.track-choice').dataset.active = String(activeTrackId === 'project2certificate');
   document.querySelector('.academy-track-picker').setAttribute('aria-label', strings.projectPaths);
   document.querySelector('.library-panel').setAttribute('aria-label', strings.title);
   document.querySelector('#breadcrumb-label').textContent = strings[currentTrack().titleKey];

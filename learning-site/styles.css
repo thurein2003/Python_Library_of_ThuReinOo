@@ -99,6 +99,12 @@ a { color: inherit; }
 .track-card-next { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 7px; color: var(--muted); font-size: 10px; font-weight: 500; }
 .track-card-next strong { padding: 3px 6px; border-radius: 4px; background: var(--selected-bg); color: var(--forest-dark); font-size: 9px; font-weight: 700; }
 .track-card-next > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.track-choice[data-active="false"] .track-card-content { gap: 0; }
+.track-choice[data-active="false"] .track-card-description,
+.track-choice[data-active="false"] .track-progress-count,
+.track-choice[data-active="false"] .track-card-next,
+.track-choice[data-active="false"] .track-progress { display: none; }
+.track-choice[data-active="false"] button { min-height: 44px; }
 .track-progress { display: block; width: calc(100% - 2px); height: 5px; margin: 0 1px; appearance: none; border: 0; border-radius: 99px; background: var(--line); }
 .track-progress::-webkit-progress-bar { border-radius: 99px; background: var(--line); }
 .track-progress::-webkit-progress-value { border-radius: 99px; background: var(--forest); }
