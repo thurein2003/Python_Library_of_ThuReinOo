@@ -146,8 +146,13 @@ a { color: inherit; }
 .mobile-lesson-menu { display: none; }
 .lesson-list { display: flex; flex: 1; flex-direction: column; gap: 19px; min-height: 0; overflow-y: auto; padding: 19px 3px 10px 0; scrollbar-color: var(--line) transparent; scrollbar-width: thin; }
 .track-group { display: grid; gap: 5px; }
-.track-title { display: flex; justify-content: space-between; margin: 0 7px 4px; color: var(--muted); font: 500 10px 'DM Mono', monospace; text-transform: uppercase; }
-.track-title small { color: var(--muted); font: inherit; }
+.track-title { display: flex; align-items: center; gap: 8px; margin: 0 2px 4px; padding: 5px 6px; border-radius: 6px; color: var(--muted); font: 500 10px 'DM Mono', monospace; text-transform: uppercase; cursor: pointer; list-style: none; transition: color .18s ease, background-color .18s ease; }
+.track-title::-webkit-details-marker { display: none; }
+.track-title::after { margin-left: 4px; color: var(--muted); content: '+'; font: 14px/1 'DM Sans', sans-serif; }
+.track-group[open] > .track-title { color: var(--accent-strong); }
+.track-group[open] > .track-title::after { color: var(--accent); content: '−'; }
+.track-title:hover { background: var(--hover-bg); color: var(--accent-strong); }
+.track-title small { margin-left: auto; color: var(--muted); font: inherit; }
 .lesson-item { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 9px; width: 100%; min-height: 46px; padding: 6px 8px; border: 1px solid transparent; border-radius: 8px; background: transparent; text-align: left; cursor: pointer; transition: border-color .18s ease, background-color .18s ease, transform .18s ease; }
 .lesson-item:hover { background: var(--hover-bg); }
 .lesson-item[aria-current="page"] { border-color: var(--selected-line); background: var(--selected-bg); }

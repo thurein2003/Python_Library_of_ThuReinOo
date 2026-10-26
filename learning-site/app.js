@@ -92,6 +92,7 @@ if (!learnerName) {
 }
 let activeTrackId = trackIds.includes(storage.getItem(ACTIVE_TRACK_KEY)) ? storage.getItem(ACTIVE_TRACK_KEY) : 'project2certificate';
 let activeId = storage.getItem(tracks[activeTrackId].keys.active) || tracks[activeTrackId].lessons[0].id;
+const expandedPathByTrack = Object.fromEntries(trackIds.map(id => [id, null]));
 filter.value = activeTrackId === 'beginner' ? 'Beginner' : 'all';
 let language = storage.getItem('python-project-library-language') || 'en';
 if (!copy[language]) language = 'en';
@@ -347,11 +348,22 @@ function renderList() {
   for (const path of currentTrack().paths) {
     const groupLessons = path.lessonIds.map(id => visible.find(lesson => lesson.id === id)).filter(Boolean);
     if (!groupLessons.length) continue;
-    const group = document.createElement('div');
+    const group = document.createElement('details');
     group.className = 'track-group';
-    const heading = document.createElement('div');
+    group.open = expandedPathByTrack[activeTrackId] === path.id;
+    const heading = document.createElement('summary');
     heading.className = 'track-title';
     heading.innerHTML = `<span>${t(path.label)}</span><small>${groupLessons.length}</small>`;
+    heading.addEventListener('click', () => {
+      if (group.open) {
+        expandedPathByTrack[activeTrackId] = null;
+        return;
+      }
+      expandedPathByTrack[activeTrackId] = path.id;
+      lessonList.querySelectorAll('.track-group[open]').forEach(openGroup => {
+        if (openGroup !== group) openGroup.open = false;
+      });
+    });
     group.append(heading);
     groupLessons.forEach(lesson => {
       const button = document.createElement('button');
@@ -471,6 +483,7 @@ function selectLesson(id) {
   activeRun = null;
   clearTimeout(runTimer);
   activeId = id;
+  expandedPathByTrack[activeTrackId] = currentTrack().paths.find(path => path.lessonIds.includes(id))?.id || null;
   setMobileLessonMenu(false);
   renderLesson();
   scrollToLessonOnMobile();
