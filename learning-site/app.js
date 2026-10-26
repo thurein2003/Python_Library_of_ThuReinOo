@@ -5,7 +5,7 @@ import { beginnerLessons } from './beginner-lessons.js';
 import { beginnerSolutions } from './beginner-solutions.js';
 import { beginnerLearningPaths } from './beginner-learning-path.js';
 import { createProgressBackup, validateProgressBackup } from './progress.js';
-import { copy } from './i18n.js?v=academy-1';
+import { copy } from './i18n.js?v=academy-3';
 
 const STORAGE_KEY = 'python-project-library-progress-v1';
 const SOLUTION_CLICKS_KEY = 'python-project-library-solution-clicks-v1';
@@ -65,6 +65,7 @@ const storage = {
 };
 const lessonList = document.querySelector('#lesson-list');
 const lessonContent = document.querySelector('#lesson-content');
+const mobileLessonMenu = document.querySelector('#mobile-lesson-menu');
 const filter = document.querySelector('#level-filter');
 const search = document.querySelector('#project-search');
 const progressCount = document.querySelector('#progress-count');
@@ -168,7 +169,10 @@ function applyPreferences() {
   };
   for (const [selector, key] of Object.entries(labels)) document.querySelector(selector).textContent = strings[key];
   document.querySelector('#beginner-track-label').textContent = strings.trackBeginner;
+  document.querySelector('#beginner-track-description').textContent = strings.trackBeginnerDescription;
   document.querySelector('#project-track-label').textContent = strings.trackProjectCertificate;
+  document.querySelector('#project-track-description').textContent = strings.trackProjectDescription;
+  document.querySelector('#mobile-lesson-menu-label').textContent = strings.lessonMenu;
   document.querySelector('#beginner-track-button').setAttribute('aria-pressed', String(activeTrackId === 'beginner'));
   document.querySelector('#project-track-button').setAttribute('aria-pressed', String(activeTrackId === 'project2certificate'));
   document.querySelector('.academy-track-picker').setAttribute('aria-label', strings.projectPaths);
@@ -221,6 +225,7 @@ function saveProgress() {
   storage.setItem(currentKeys().completed, JSON.stringify([...completed]));
   progressCount.textContent = t('progress', { done: completed.size, total: currentLessons().length });
   renderTrackProgress();
+  renderPathProgress();
   updateCertificateAccess();
 }
 
@@ -231,13 +236,48 @@ function renderTrackProgress() {
     const total = track.lessons.length;
     const label = t(track.titleKey);
     const progressLabel = t('progress', { done, total });
-    const progress = document.querySelector(`#${trackId === 'beginner' ? 'beginner' : 'project'}-track-progress`);
-    const count = document.querySelector(`#${trackId === 'beginner' ? 'beginner' : 'project'}-track-count`);
+    const prefix = trackId === 'beginner' ? 'beginner' : 'project';
+    const progress = document.querySelector(`#${prefix}-track-progress`);
+    const count = document.querySelector(`#${prefix}-track-count`);
+    const resumeLesson = getResumeLesson(trackId);
+    const resumeTitle = localizedLesson(resumeLesson).title;
+    const continueLabel = done === total ? t('reviewCourse') : t('continueLearning');
     progress.max = total;
     progress.value = done;
     progress.setAttribute('aria-label', `${label}: ${progressLabel}`);
     count.textContent = progressLabel;
+    document.querySelector(`#${prefix}-continue-label`).textContent = continueLabel;
+    document.querySelector(`#${prefix}-next-lesson`).textContent = resumeTitle;
+    document.querySelector(`#${prefix}-track-button`).setAttribute('aria-label', `${label}. ${progressLabel}. ${continueLabel}: ${resumeTitle}`);
   }
+  const currentProgress = t('progress', { done: completed.size, total: currentLessons().length });
+  document.querySelector('#mobile-lesson-count').textContent = currentProgress;
+  mobileLessonMenu.setAttribute('aria-label', `${t('lessonMenu')}. ${currentProgress}`);
+}
+
+function getResumeLesson(trackId) {
+  const track = tracks[trackId];
+  const trackCompleted = trackId === activeTrackId ? completed : loadTrackProgress(track);
+  const lastActiveId = storage.getItem(track.keys.active);
+  const lastActive = track.lessons.find(lesson => lesson.id === lastActiveId);
+  if (lastActive && !trackCompleted.has(lastActive.id)) return lastActive;
+  return track.lessons.find(lesson => !trackCompleted.has(lesson.id)) || track.lessons.at(-1);
+}
+
+function renderPathProgress() {
+  const progress = document.querySelector('#path-progress');
+  if (!progress) return;
+  const path = currentTrack().paths.find(item => item.lessonIds.includes(activeId));
+  if (!path) return;
+  const done = path.lessonIds.filter(id => completed.has(id)).length;
+  const total = path.lessonIds.length;
+  const pathName = t(path.label);
+  const count = t('progress', { done, total });
+  document.querySelector('#path-progress-name').textContent = pathName;
+  document.querySelector('#path-progress-count').textContent = count;
+  progress.max = total;
+  progress.value = done;
+  progress.setAttribute('aria-label', `${pathName}: ${count}`);
 }
 
 function saveVerifiedRuns() {
@@ -333,17 +373,20 @@ function renderList() {
 }
 
 function renderLesson() {
+  setEditorExpanded(false);
   const lessonsForTrack = currentLessons();
   const sourceLesson = lessonsForTrack.find(item => item.id === activeId) || lessonsForTrack[0];
   const lesson = localizedLesson(sourceLesson);
   activeId = lesson.id;
   storage.setItem(currentKeys().active, activeId);
+  renderTrackProgress();
   document.querySelector('#crumb-title').textContent = lesson.title;
   const goals = lesson.goals.map(goal => `<li>${escapeHtml(goal)}</li>`).join('');
   lessonContent.innerHTML = `
     <header class="lesson-header">
-      <div><h2>${escapeHtml(lesson.title)}</h2><p>${escapeHtml(lesson.summary)}</p></div>
+      <div class="lesson-title-block"><h2>${escapeHtml(lesson.title)}</h2><p>${escapeHtml(lesson.summary)}</p></div>
       <div class="lesson-badges"><span class="badge level-${lesson.level.toLowerCase()}">${t(lesson.level.toLowerCase())} ${t(currentTrack().lessonLabel)}</span><span class="badge">${lesson.duration}</span><span class="badge">${escapeHtml(lesson.topic)}</span></div>
+      <div class="lesson-path-progress"><div class="lesson-path-progress-labels"><strong id="path-progress-name"></strong><span id="path-progress-count"></span></div><progress id="path-progress" max="1" value="0" aria-label=""></progress></div>
     </header>
     <div class="learning-grid">
       <div class="brief-panel">
@@ -351,8 +394,8 @@ function renderLesson() {
         <section class="brief-section"><h3>${t('challenge')}</h3><p>${escapeHtml(lesson.task)}</p></section>
         <section class="brief-section coach-note"><h3>${t('hint')}</h3><p>${escapeHtml(lesson.hint)}</p></section>
       </div>
-      <section class="editor-panel" aria-label="${t('editor')}">
-        <div class="editor-head"><span class="file-name">main.py</span><div class="editor-controls"><button type="button" class="editor-button" id="reset-code">${t('reset')}</button><button type="button" class="editor-button run" id="run-code">▶ ${t('run')}</button></div></div>
+      <section class="editor-panel" id="code-editor-panel" aria-label="${t('editor')}">
+        <div class="editor-head"><div class="editor-title"><span class="file-name">main.py</span><span class="editor-shortcut">${t('runShortcut')}</span></div><div class="editor-controls"><button type="button" class="editor-button" id="reset-code">${t('reset')}</button><button type="button" class="editor-button" id="expand-editor" aria-label="${t('expandEditor')}" title="${t('expandEditor')}" aria-expanded="false" aria-controls="code-editor-panel"><span class="expand-icon" aria-hidden="true">⛶</span><span class="editor-expand-label">${t('expandEditor')}</span></button><button type="button" class="editor-button run" id="run-code">▶ ${t('run')}</button></div></div>
         <label class="sr-only" for="code-editor">${t('editor')}</label><textarea class="editor" id="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
         <div class="output-head"><span>${t('output')}</span><span class="output-status" id="output-status" role="status" aria-live="polite" aria-atomic="true">${t('ready')}</span></div>
         <pre class="output empty" id="output">${t('runToOutput')}</pre>
@@ -366,6 +409,7 @@ function renderLesson() {
     <p class="completion-requirement" id="completion-requirement" aria-live="polite"></p>`;
 
   document.querySelector('.solution-code').textContent = currentTrack().solutions[lesson.id];
+  renderPathProgress();
   const solutionPanel = document.querySelector('.solution-panel');
   solutionPanel.querySelector('summary').addEventListener('click', () => {
     solutionClicks += 1;
@@ -403,6 +447,9 @@ function renderLesson() {
     editor.dispatchEvent(new Event('input', { bubbles: true }));
     showOutput(t('ready'), t('runToOutput'), false);
   });
+  document.querySelector('#expand-editor').addEventListener('click', () => {
+    setEditorExpanded(!document.querySelector('#code-editor-panel').classList.contains('is-expanded'));
+  });
   runButton.addEventListener('click', () => runCode(editor.value, runButton));
   document.querySelector('#previous-project').disabled = lessonsForTrack.indexOf(sourceLesson) === 0;
   document.querySelector('#previous-project').addEventListener('click', () => navigate(-1));
@@ -423,26 +470,57 @@ function selectLesson(id) {
   activeRun = null;
   clearTimeout(runTimer);
   activeId = id;
+  setMobileLessonMenu(false);
   renderLesson();
+  scrollToLessonOnMobile();
 }
 
 function selectTrack(id) {
-  if (!tracks[id] || id === activeTrackId) return;
+  if (!tracks[id]) return;
   if (worker) worker.terminate();
   worker = null;
   activeRun = null;
   clearTimeout(runTimer);
-  activeTrackId = id;
-  storage.setItem(ACTIVE_TRACK_KEY, activeTrackId);
-  completed = loadProgress();
-  verifiedRuns = loadVerifiedRuns();
-  solutionClicks = Math.max(0, Number.parseInt(storage.getItem(currentKeys().solutionClicks) || '0', 10) || 0);
-  activeId = storage.getItem(currentKeys().active) || currentLessons()[0].id;
+  if (id !== activeTrackId) {
+    activeTrackId = id;
+    storage.setItem(ACTIVE_TRACK_KEY, activeTrackId);
+    completed = loadProgress();
+    verifiedRuns = loadVerifiedRuns();
+    solutionClicks = Math.max(0, Number.parseInt(storage.getItem(currentKeys().solutionClicks) || '0', 10) || 0);
+  }
+  activeId = getResumeLesson(activeTrackId).id;
+  storage.setItem(currentKeys().active, activeId);
   filter.value = activeTrackId === 'beginner' ? 'Beginner' : 'all';
   search.value = '';
+  setMobileLessonMenu(false);
   applyPreferences();
   renderList();
   renderLesson();
+  scrollToLessonOnMobile();
+}
+
+function setMobileLessonMenu(open) {
+  mobileLessonMenu.setAttribute('aria-expanded', String(open));
+  lessonList.classList.toggle('mobile-open', open);
+}
+
+function scrollToLessonOnMobile() {
+  if (!window.matchMedia('(max-width: 680px)').matches) return;
+  lessonContent.focus({ preventScroll: true });
+  lessonContent.scrollIntoView({ block: 'start' });
+}
+
+function setEditorExpanded(expanded) {
+  const panel = document.querySelector('#code-editor-panel');
+  const button = document.querySelector('#expand-editor');
+  if (!panel || !button) return;
+  panel.classList.toggle('is-expanded', expanded);
+  document.body.classList.toggle('editor-expanded', expanded);
+  button.setAttribute('aria-expanded', String(expanded));
+  const label = t(expanded ? 'collapseEditor' : 'expandEditor');
+  button.setAttribute('aria-label', label);
+  button.title = label;
+  button.querySelector('.editor-expand-label').textContent = label;
 }
 
 function navigate(offset) {
@@ -520,8 +598,20 @@ function escapeHtml(value) {
   return value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 }
 
-filter.addEventListener('change', renderList);
-search.addEventListener('input', renderList);
+filter.addEventListener('change', () => {
+  renderList();
+  if (window.matchMedia('(max-width: 680px)').matches) setMobileLessonMenu(true);
+});
+search.addEventListener('input', () => {
+  renderList();
+  if (search.value.trim() && window.matchMedia('(max-width: 680px)').matches) setMobileLessonMenu(true);
+});
+mobileLessonMenu.addEventListener('click', () => {
+  setMobileLessonMenu(mobileLessonMenu.getAttribute('aria-expanded') !== 'true');
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && document.body.classList.contains('editor-expanded') && !document.querySelector('dialog[open]')) setEditorExpanded(false);
+});
 document.querySelector('#beginner-track-button').addEventListener('click', () => selectTrack('beginner'));
 document.querySelector('#project-track-button').addEventListener('click', () => selectTrack('project2certificate'));
 languageSelect.addEventListener('change', () => {

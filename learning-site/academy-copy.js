@@ -2,7 +2,7 @@ export const academyCopy = {
   en: {
     title: 'Python Learning Academy', tagline: 'Learn Python step by step', workshop: 'PYTHON ACADEMY', projectPaths: 'Learning tracks', projectLibrary: 'Academy',
     importFailed: 'Could not import that file. Choose a valid Python Learning Academy backup for the selected track.',
-    trackBeginner: 'Beginner Python', trackProjectCertificate: 'Project2Certificate', filterByLevel: 'Filter by level', beginnerOnly: 'Beginner only',
+    trackBeginner: 'Studying', trackBeginnerDescription: 'Beginner Python course', trackProjectCertificate: 'Project2Certificate', trackProjectDescription: '20 projects + certificate', lessonMenu: 'Lessons', reviewCourse: 'Review course', runShortcut: 'Ctrl/⌘ + Enter to run', expandEditor: 'Expand editor', collapseEditor: 'Close expanded editor', filterByLevel: 'Filter by level', beginnerOnly: 'Beginner only',
     beginner: 'Beginner', lessonLabel: 'lesson', findLesson: 'Find a lesson', beginnerList: 'Beginner Python lessons', nextLesson: 'Next lesson →',
     allLessonsComplete: 'All lessons complete ✓', learnerWelcomeTitle: 'Welcome to Python Learning Academy',
     learnerWelcomeCopy: 'Enter your name to begin. Your learning activity stays in this browser.',
@@ -27,7 +27,7 @@ export const academyCopy = {
   my: {
     title: 'Python Learning Academy', tagline: 'အဆင့်ဆင့် Python လေ့လာပါ', workshop: 'PYTHON ACADEMY', projectPaths: 'သင်ယူမှုလမ်းကြောင်းများ', projectLibrary: 'Academy',
     importFailed: 'ဖိုင်ကို ထည့်သွင်း၍မရပါ။ ရွေးထားသောလမ်းကြောင်းအတွက် မှန်ကန်သော Python Learning Academy အရန်ဖိုင်ကို ရွေးပါ။',
-    trackBeginner: 'Beginner Python', trackProjectCertificate: 'Project2Certificate', filterByLevel: 'အဆင့်အလိုက် စစ်ထုတ်ရန်', beginnerOnly: 'Beginner အဆင့်သာ',
+    trackBeginner: 'လေ့လာခြင်း', trackBeginnerDescription: 'Beginner Python သင်တန်း', trackProjectCertificate: 'Project2Certificate', trackProjectDescription: 'ပရောဂျက် ၂၀ + လက်မှတ်', lessonMenu: 'သင်ခန်းစာများ', reviewCourse: 'သင်တန်းကို ပြန်လည်လေ့လာရန်', runShortcut: 'လုပ်ဆောင်ရန် Ctrl/⌘ + Enter နှိပ်ပါ', expandEditor: 'ကုဒ်တည်းဖြတ်ရာကို ချဲ့ရန်', collapseEditor: 'ချဲ့ထားသော ကုဒ်တည်းဖြတ်ရာကို ပိတ်ရန်', filterByLevel: 'အဆင့်အလိုက် စစ်ထုတ်ရန်', beginnerOnly: 'Beginner အဆင့်သာ',
     beginner: 'Beginner', lessonLabel: 'သင်ခန်းစာ', findLesson: 'သင်ခန်းစာရှာရန်', beginnerList: 'Beginner Python သင်ခန်းစာများ', nextLesson: 'နောက်သင်ခန်းစာ →',
     allLessonsComplete: 'သင်ခန်းစာအားလုံး ပြီးပါပြီ ✓', learnerWelcomeTitle: 'Python Learning Academy မှ ကြိုဆိုပါသည်',
     learnerWelcomeCopy: 'စတင်ရန် သင့်အမည်ကို ထည့်ပါ။ သင်ယူမှုမှတ်တမ်းကို ဤဘရောက်ဇာတွင်သာ သိမ်းဆည်းမည်။',
@@ -52,7 +52,7 @@ export const academyCopy = {
   th: {
     title: 'Python Learning Academy', tagline: 'เรียน Python ทีละขั้น', workshop: 'PYTHON ACADEMY', projectPaths: 'เส้นทางการเรียน', projectLibrary: 'Academy',
     importFailed: 'นำเข้าไฟล์ไม่ได้ โปรดเลือกไฟล์สำรองของ Python Learning Academy ที่ถูกต้องสำหรับเส้นทางนี้',
-    trackBeginner: 'Beginner Python', trackProjectCertificate: 'Project2Certificate', filterByLevel: 'กรองตามระดับ', beginnerOnly: 'ระดับ Beginner เท่านั้น',
+    trackBeginner: 'การเรียน', trackBeginnerDescription: 'หลักสูตร Python สำหรับผู้เริ่มต้น', trackProjectCertificate: 'Project2Certificate', trackProjectDescription: '20 โปรเจกต์ + ใบรับรอง', lessonMenu: 'บทเรียน', reviewCourse: 'ทบทวนหลักสูตร', runShortcut: 'กด Ctrl/⌘ + Enter เพื่อรัน', expandEditor: 'ขยายตัวแก้ไขโค้ด', collapseEditor: 'ปิดมุมมองตัวแก้ไขแบบขยาย', filterByLevel: 'กรองตามระดับ', beginnerOnly: 'ระดับ Beginner เท่านั้น',
     beginner: 'Beginner', lessonLabel: 'บทเรียน', findLesson: 'ค้นหาบทเรียน', beginnerList: 'บทเรียน Beginner Python', nextLesson: 'บทเรียนถัดไป →',
     allLessonsComplete: 'เรียนครบทุกบทแล้ว ✓', learnerWelcomeTitle: 'ยินดีต้อนรับสู่ Python Learning Academy',
     learnerWelcomeCopy: 'ใส่ชื่อเพื่อเริ่มต้น กิจกรรมการเรียนรู้จะบันทึกไว้ในเบราว์เซอร์นี้',

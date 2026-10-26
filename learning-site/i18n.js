@@ -1,5 +1,5 @@
 import { additionalCopy } from './additional-copy.js';
-import { academyCopy } from './academy-copy.js';
+import { academyCopy } from './academy-copy.js?v=academy-3';
 
 export const languageNames = { en: 'English', my: 'မြန်မာ', th: 'ไทย' };
 

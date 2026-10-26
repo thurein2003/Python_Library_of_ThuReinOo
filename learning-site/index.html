@@ -7,8 +7,8 @@
   <meta name="description" content="Learn Python from beginner lessons to hands-on projects and a completion certificate.">
   <title>Python Learning Academy | Thu Rein Oo</title>
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png?v=academy-1">
-  <link rel="stylesheet" href="styles.css?v=academy-2">
-  <script type="module" src="app.js?v=academy-1"></script>
+  <link rel="stylesheet" href="styles.css?v=academy-3">
+  <script type="module" src="app.js?v=academy-3"></script>
 </head>
 <body>
   <a class="skip-link" id="skip-to-lesson" href="#lesson-content">Skip to lesson</a>
@@ -57,15 +57,19 @@
       <div class="academy-track-picker" role="group" aria-label="Learning tracks">
         <div class="track-choice">
           <button type="button" id="beginner-track-button" aria-pressed="false">
-            <span id="beginner-track-label">Beginner Python</span>
-            <span class="track-progress-count" id="beginner-track-count">0 / 10 complete</span>
+            <span class="track-card-content">
+              <span class="track-card-heading"><span class="track-card-title"><span id="beginner-track-label">Studying</span><small class="track-card-description" id="beginner-track-description">Beginner Python course</small></span><span class="track-progress-count" id="beginner-track-count">0 / 10 complete</span></span>
+              <span class="track-card-next"><strong id="beginner-continue-label">Continue</strong><span id="beginner-next-lesson">Your first Python program</span><span aria-hidden="true">→</span></span>
+            </span>
           </button>
           <progress class="track-progress" id="beginner-track-progress" max="10" value="0" aria-label="Beginner Python progress"></progress>
         </div>
         <div class="track-choice">
           <button type="button" id="project-track-button" aria-pressed="true">
-            <span id="project-track-label">Project2Certificate</span>
-            <span class="track-progress-count" id="project-track-count">0 / 20 complete</span>
+            <span class="track-card-content">
+              <span class="track-card-heading"><span class="track-card-title"><span id="project-track-label">Project2Certificate</span><small class="track-card-description" id="project-track-description">20 projects + certificate</small></span><span class="track-progress-count" id="project-track-count">0 / 20 complete</span></span>
+              <span class="track-card-next"><strong id="project-continue-label">Continue</strong><span id="project-next-lesson">Tip calculator</span><span aria-hidden="true">→</span></span>
+            </span>
           </button>
           <progress class="track-progress" id="project-track-progress" max="20" value="0" aria-label="Project2Certificate progress"></progress>
         </div>
@@ -75,6 +79,11 @@
         <span class="sr-only" id="search-label">Search projects</span>
         <input id="project-search" type="search" placeholder="Find a project" aria-labelledby="search-label" autocomplete="off">
       </label>
+      <button class="mobile-lesson-menu" id="mobile-lesson-menu" type="button" aria-expanded="false" aria-controls="lesson-list">
+        <span id="mobile-lesson-menu-label">Lessons</span>
+        <span id="mobile-lesson-count">0 / 20 complete</span>
+        <span class="mobile-menu-chevron" aria-hidden="true">⌄</span>
+      </button>
       <nav id="lesson-list" class="lesson-list" aria-label="Projects"></nav>
       <div class="side-footer">
         <span class="status-dot"></span>

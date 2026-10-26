@@ -12,6 +12,8 @@ python3 -m http.server 8000 --directory learning-site
 
 Open <http://localhost:8000>. Learners enter a name before starting; changing the name clears both tracks' progress, run checks, drafts, and solution-click counts. Each track saves its progress separately. The name and learning history stay in local browser storage and are never encoded in the shareable URL. Use **Transfer progress** to download or restore a JSON backup for the selected track between browsers. Backups contain the learner name and saved code, so keep them private. If browser storage is blocked, the app falls back to tab-only memory and displays a warning. The first run loads the pinned Pyodide `314.0.7` runtime from jsDelivr and needs an internet connection. Code runs in a time-limited Web Worker and is not sent to a project server.
 
+On phones, use **Lessons** to open the grouped course outline. Each track card resumes at the last unfinished lesson. In the editor, choose **Expand editor** for a larger workspace or press `Ctrl/⌘ + Enter` to run your code.
+
 ## Add a lesson
 
 For **Project2Certificate**, add a unique lesson to `additional-lessons.js`, a solution to `solutions.js`, a position in `learning-path.js`, and translations to `additional-copy.js`. For **Beginner Python**, add a beginner-only lesson to `beginner-lessons.js`, its solution to `beginner-solutions.js`, a position in `beginner-learning-path.js`, and translations to `academy-copy.js`. Include duration, topic, summary, goals, task, hint, and runnable Python code. Prefer fixtures over live services so lessons run consistently and do not depend on learner credentials or third-party API availability. Keep examples educational and safe.
