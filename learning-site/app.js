@@ -250,7 +250,6 @@ function renderTrackProgress() {
     count.textContent = progressLabel;
     document.querySelector(`#${prefix}-continue-label`).textContent = continueLabel;
     document.querySelector(`#${prefix}-next-lesson`).textContent = resumeTitle;
-    document.querySelector(`#${prefix}-track-button`).setAttribute('aria-label', `${label}. ${progressLabel}. ${continueLabel}: ${resumeTitle}`);
   }
   const currentProgress = t('progress', { done: completed.size, total: currentLessons().length });
   document.querySelector('#mobile-lesson-count').textContent = currentProgress;
@@ -742,9 +741,12 @@ document.querySelector('#learner-form').addEventListener('submit', event => {
 });
 
 function setTheme(nextTheme) {
+  const root = document.documentElement;
+  root.classList.add('theme-changing');
   theme = nextTheme;
   storage.setItem('python-project-library-theme', theme);
   applyPreferences();
+  requestAnimationFrame(() => root.classList.remove('theme-changing'));
 }
 
 document.querySelector('#reset-progress').addEventListener('click', async () => {
